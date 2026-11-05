@@ -1,39 +1,42 @@
-# PLAN: Sense Hack '26 Sleek Portal Website (Revision 6)
+# PLAN.md: Phase 25 - Natural CRT Environment (Bias Lighting, Surface Plane & Trailing Cables)
 
-## Architectural & Technical Specifications
+## Objective
+Introduce subtle, realistic environmental grounding behind the CRT TV without visual clutter:
+1. Dynamic reactive bias lighting (wall halo) reflecting tube phosphor colors and power states.
+2. Grounded studio workbench horizon plane with soft contact occlusion.
+3. Realistic matte black trailing power cord and coaxial cables snaking out behind the chassis.
 
-1. **Zero-Cost WebGL rAF Pause & Smooth Resume (`Hero.tsx`):**
-   - Three.js setup initialized in `useEffect(..., [])` (mount-only).
-   - When `isWebGLActive === false`: `cancelAnimationFrame(animationFrameIdRef.current)`, setting ID to `null` (zero idle callbacks).
-   - When `isWebGLActive === true`: restarts rAF loop via `useEffect([isWebGLActive])`.
-   - Tracks accumulated delta time (`activeTimeRef.current += delta`) to eliminate `THREE.Clock` time-jump spikes upon re-entry.
+## Architecture & Visual Layers
+- **Layer 0A: Dynamic Reactive Wall Bias Light**
+  - Position: Behind `#crt-tv-stage` (`z-0`).
+  - Geometry: Soft elliptical radial glow extending ~15-20% beyond cabinet perimeter onto the back wall.
+  - Channels:
+    - `Power OFF`: Fades to 0 opacity.
+    - `CH 26 / 07`: Amber phosphor wall bounce (`#ff6a14`, `opacity: 0.85`).
+    - `CH 04`: Neutral/cool white broadcast wall bounce (`#b0c8e8`, `opacity: 0.70`).
+    - `CH 02`: Static snow glow (`#9bbce0`, `opacity: 0.65`).
+    - `CH 13`: Emerald oscilloscope glow (`#22c55e`, `opacity: 0.75`).
+    - `CH 11`: Dark sync flicker (`#883020`, `opacity: 0.50`).
+- **Layer 0B: Studio Workbench Surface Horizon Plane**
+  - Position: Horizontal band aligned with the bottom contact line of the CRT television (~68%–72% height).
+  - Appearance: Faint top horizon highlight (`border-t border-white/[0.04]`), dark matte surface gradient, and ambient contact shadow directly underneath the unit.
+- **Layer 0C: Trailing Hardware Cables (SVG Organic Béziers)**
+  - Position: Behind the TV cabinet (`z-[0]`), casting soft drop-shadows onto the workbench surface.
+  - Cable 1 (Power Cord): Thick 3-prong industrial rubber cable (~8px thick, deep matte charcoal `#121216` with `#24242e` subtle specular highlight ridge) emerging from behind the lower-left rear chassis and curving out toward the edge of the workbench.
+  - Cable 2 (Coaxial BNC / Antenna): Slender 75Ω coaxial cable (~4.5px thick, dark warm gray `#181614`) drooping from upper-right rear connector down behind the right cabinet side.
 
-2. **Native Mobile Vertical Scrolling (`Hero.tsx`):**
-   - Canvas container explicitly styled with `touch-pan-y` / `style={{ touchAction: 'pan-y' }}`.
-   - Touch listeners attached with `{ passive: true }` so vertical mobile touch gestures never get trapped or intercepted.
-
-3. **Guarded Clipboard Handshake & Modal Payload Preview (`FormsSection.tsx`):**
-   - `navigator.clipboard.writeText()` wrapped in a `try/catch` block.
-   - Formatted requisition summary rendered inside a styled `<textarea readOnly />` in the modal as an explicit visual fallback.
-   - Prefill query parameters appended only for `docs.google.com/forms`; clean URL opened directly for `forms.gle` shortlinks.
-   - "Clear Draft" button purges stored `localStorage` keys and resets state.
-
-4. **Accommodation Form Integrity (`FormsSection.tsx`):**
-   - Auto-computes `totalMembers = Number(maleCount) + Number(femaleCount)`.
-   - Enforces `new Date(departureDate) >= new Date(arrivalDate)` with inline error feedback.
-
-5. **Physical CRT Alignment & Glass Boundary Calibration (Phase 21):**
-   - 1:1 Base-Plate Lock: Remove displacement drift from Channel 26 feed image so letters line up with physical bezel reflections.
-   - Viewport boundary recalibration: $X \in [204, 1672]$, $Y \in [183, 1244]$ in 2130x1420 image space.
-   - Nested plate image alignment: `left: -13.896%`, `top: -17.248%`, `width: 145.095%`, `height: 133.836%`.
-   - Scanline perimeter alpha feather: 12px smooth gradient so scanlines never bleed outside the glass face.
-
-## Execution Phases
-- **Phase 1 to 20:** Prior iterations (scaffolding, audio, photographic CRT unit, channels, control deck exposure, aspect ratio fixes).
-- **Phase 21: Bezel Reflection Alignment & Glass Boundary Inset:**
-  1. Remove `url(#crt-subtle-barrel-warp)` from Channel 26 image plate to achieve 1:1 lock with bezel reflections.
-  2. Recalibrate `.crt-tube-viewport` in `src/index.css` to match physical glass boundaries ($9.577\% \text{ left}, 12.887\% \text{ top}, 68.920\% \text{ width}, 74.718\% \text{ height}$).
-  3. Recalibrate inner image positioning in `src/components/Hero.tsx` to match the new viewport.
-  4. Recalibrate SVG `#crt-tube-barrel` squircle path.
-  5. Add perimeter alpha feather mask to scanlines and rolling hum-bar.
-  6. E2E verification in Playwright (macro crops of bezel reflections + full unit).
+## Execution Steps
+1. **CSS Definitions in `src/index.css`:**
+   - Define `.crt-bias-light` base styles and channel-reactive state classes (`.crt-bias-amber`, `.crt-bias-smpte`, `.crt-bias-snow`, `.crt-bias-green`, `.crt-bias-scramble`).
+   - Define `.crt-desk-horizon` and ambient contact shadow styles.
+2. **Component Integration in `src/components/Hero.tsx`:**
+   - Add the reactive bias light container behind `#crt-tv-stage`.
+   - Add the workbench horizon surface behind the unit.
+   - Add the SVG trailing cables layer with realistic Bézier paths and ambient drop shadows.
+3. **Build & Type Check:**
+   - Run `npm run build` to ensure zero compilation or bundle errors.
+4. **Mandatory Phase-End E2E Verification (Playwright):**
+   - Test power switch toggle: verify bias light fades out smoothly when power is turned OFF and restores on ON.
+   - Test channel dial rotation across Channels 26, 04, 02, 13, 07: verify bias lighting shifts color cleanly and cables stay grounded.
+   - Capture desktop (1440x900) and mobile viewports to ensure seamless responsive scaling without horizontal overflow.
+5. **Update `PROGRESS.md` & `walkthrough.md`.**

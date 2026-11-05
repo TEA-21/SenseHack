@@ -365,6 +365,101 @@
   }
 }
 
+/* Dynamic Reactive Wall Bias Light (Phosphor Backlight Halo) */
+.crt-bias-light {
+  position: absolute;
+  top: -10%;
+  left: -12%;
+  right: -12%;
+  bottom: -6%;
+  border-radius: 46%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(52px);
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.2, 0, 0.2, 1), background 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+  will-change: opacity, filter;
+}
+
+.crt-bias-amber {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(255, 106, 20, 0.35) 0%,
+    rgba(255, 80, 0, 0.20) 42%,
+    rgba(255, 50, 0, 0.06) 68%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.crt-bias-smpte {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(176, 200, 232, 0.32) 0%,
+    rgba(150, 180, 220, 0.16) 42%,
+    rgba(120, 150, 200, 0.04) 68%,
+    transparent 100%
+  );
+  opacity: 0.70;
+}
+
+.crt-bias-snow {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(155, 188, 224, 0.28) 0%,
+    rgba(130, 165, 205, 0.14) 42%,
+    rgba(110, 140, 180, 0.03) 68%,
+    transparent 100%
+  );
+  opacity: 0.65;
+}
+
+.crt-bias-green {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(34, 197, 94, 0.34) 0%,
+    rgba(22, 163, 74, 0.16) 42%,
+    rgba(21, 128, 61, 0.04) 68%,
+    transparent 100%
+  );
+  opacity: 0.75;
+}
+
+.crt-bias-scramble {
+  background: radial-gradient(
+    ellipse 70% 60% at 50% 48%,
+    rgba(136, 48, 32, 0.28) 0%,
+    rgba(100, 30, 20, 0.14) 42%,
+    rgba(70, 20, 15, 0.03) 68%,
+    transparent 100%
+  );
+  opacity: 0.50;
+}
+
+/* Studio Workbench Surface Horizon Plane */
+.crt-workbench-horizon {
+  position: absolute;
+  left: -50vw;
+  right: -50vw;
+  top: 72%;
+  bottom: -20%;
+  pointer-events: none;
+  z-index: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 18, 24, 0.50) 0%,
+    rgba(12, 12, 16, 0.78) 32%,
+    rgba(8, 8, 10, 0.95) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+/* Trailing Hardware Cables Contact Shadow */
+.crt-cable-shadow {
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.85)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.95));
+}
+
 /* Atmospheric Hardware-Lab Workbench Light Spill */
 .crt-workbench-spill {
   position: absolute;

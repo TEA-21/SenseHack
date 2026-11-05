@@ -452,6 +452,19 @@ export const Hero: React.FC = () => {
     ? 'brightness(0.65) saturate(0.8)'
     : 'none';
 
+  // Dynamic Reactive Wall Bias Light Class
+  const biasLightClass = !isPowerOn
+    ? 'opacity-0'
+    : currentChannel === '02'
+    ? 'crt-bias-snow'
+    : currentChannel === '04'
+    ? 'crt-bias-smpte'
+    : currentChannel === '13'
+    ? 'crt-bias-green'
+    : currentChannel === '11'
+    ? 'crt-bias-scramble'
+    : 'crt-bias-amber crt-spill-flicker';
+
   return (
     <section
       id="hero"
@@ -564,6 +577,79 @@ export const Hero: React.FC = () => {
             ========================================================================== */}
         <div id="crt-tv-stage" className="crt-tv-stage crt-text-centered">
           
+          {/* Studio Workbench Surface Horizon Plane */}
+          <div className="crt-workbench-horizon" aria-hidden="true" />
+
+          {/* Dynamic Reactive Wall Bias Light (Back Wall Halo) */}
+          <div
+            id="crt-bias-light"
+            className={`crt-bias-light ${biasLightClass}`}
+            aria-hidden="true"
+          />
+
+          {/* Trailing Hardware Cables (Power Cord & Coaxial BNC) */}
+          <svg
+            id="crt-trailing-cables"
+            className="absolute inset-0 w-full h-full pointer-events-none crt-cable-shadow z-[0]"
+            viewBox="0 0 2130 1420"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ overflow: 'visible' }}
+            aria-hidden="true"
+          >
+            <defs>
+              <filter id="cable-blur" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="6" />
+              </filter>
+            </defs>
+
+            {/* CABLE 1: Industrial 3-Prong Rubber AC Power Cord (Emerges behind lower-left chassis) */}
+            <path
+              d="M 280 1100 C 180 1140, 90 1185, 30 1220 C -40 1260, -120 1285, -210 1300 C -300 1315, -400 1330, -500 1340"
+              stroke="rgba(0, 0, 0, 0.75)"
+              strokeWidth="24"
+              strokeLinecap="round"
+              filter="url(#cable-blur)"
+              transform="translate(0, 8)"
+            />
+            <path
+              d="M 280 1100 C 180 1140, 90 1185, 30 1220 C -40 1260, -120 1285, -210 1300 C -300 1315, -400 1330, -500 1340"
+              stroke="#121216"
+              strokeWidth="14"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 280 1099 C 180 1139, 90 1184, 30 1219 C -40 1259, -120 1284, -210 1299 C -300 1314, -400 1329, -500 1339"
+              stroke="#24242e"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              opacity="0.8"
+            />
+
+            {/* CABLE 2: Slender 75Ω Coaxial BNC Cable (Drooping behind upper-right chassis down along side) */}
+            <path
+              d="M 1860 680 C 1960 680, 2130 730, 2140 820 C 2150 910, 2155 1060, 2135 1180 C 2120 1260, 2125 1310, 2170 1345 C 2215 1380, 2280 1390, 2360 1400"
+              stroke="rgba(0, 0, 0, 0.65)"
+              strokeWidth="16"
+              strokeLinecap="round"
+              filter="url(#cable-blur)"
+              transform="translate(0, 6)"
+            />
+            <path
+              d="M 1860 680 C 1960 680, 2130 730, 2140 820 C 2150 910, 2155 1060, 2135 1180 C 2120 1260, 2125 1310, 2170 1345 C 2215 1380, 2280 1390, 2360 1400"
+              stroke="#181614"
+              strokeWidth="8"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 1860 679 C 1960 679, 2130 729, 2140 819 C 2150 909, 2155 1059, 2135 1179 C 2120 1259, 2125 1309, 2170 1344 C 2215 1379, 2280 1389, 2360 1399"
+              stroke="#2c2822"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              opacity="0.75"
+            />
+          </svg>
+
           {/* Dynamic Desk Workbench Light Spill (Reacts to Power & Channel) */}
           <div
             className={`crt-workbench-spill ${
