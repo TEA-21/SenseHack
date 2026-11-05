@@ -1,29 +1,27 @@
 # PROGRESS.md
 
 ## Current Active Phase
-Phase 23 Complete: Interactive Blinking Bitmap Prompt in CRT Lower Third
+Phase 24 Complete: Groove-Flanged Viewport & Bezel Rim Bounce-Light Attenuation (Zero Leak on All Channels)
 
 ## Completed Steps & Exact Techniques/Libraries Used
-- **Prompt Element & Architecture ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
-  - Integrated `<button className="crt-bitmap-prompt pointer-events-auto">` inside Channel 26, positioned at `bottom: 19%` in the lower third.
-  - Layered directly underneath `.crt-ch26-scanline-cut` and `.crt-ch26-rolling-bar` so physical scanlines and endpoint-pinned barrel distortion apply across both the letters and the cursor.
-  - Added click handler `handlePromptClick` with tactile CRT audio tone and smooth-scroll to `#overview`.
-- **Styling & 1Hz Square-Wave Cursor Animation ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
-  - Styled with JetBrains Mono monospace typography, amber cathode phosphor color (`#ffaa1d`), and dual-layer glow text-shadow.
-  - Implemented classic 1Hz step-end square-wave cursor toggle (`500ms ON / 500ms OFF` via `@keyframes crtCursorBlink`).
-  - Added tactile hover brightness boost (`filter: brightness(1.25)`) and active scale (`0.98`).
-- **Section Anchor ([`src/components/OverviewDeck.tsx`](file:///d:/Projects/SenseHack/src/components/OverviewDeck.tsx)):**
-  - Added `id="overview"` to the overview section container for smooth navigation handshake.
+- **Extended Viewport Flange ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
+  - Expanded `.crt-tube-viewport` outward to fit the physical shadow groove of the TV chassis: `left: 8.4507%`, `top: 11.2676%`, `width: 71.0798%`, `height: 77.6056%`.
+- **Calibrated Groove Squircle Mask ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
+  - Recalibrated `#crt-tube-barrel` squircle path corner control points (`0.005`, `0.006`, `0.995`, `0.994`) to track the inner curvature of the bezel shadow groove, eliminating exposed background corners.
+- **Channel 26 Sub-Pixel Image Lock ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
+  - Updated Channel 26 nested `/crt-full-tight.png` image styles (`width: 140.687%`, `height: 128.857%`, `left: -11.889%`, `top: -14.519%`) ensuring 100% alignment with bezel reflections for 'S' and ''26'.
+- **Bezel Rim Reflection Attenuation & Channel Spills ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx), [`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
+  - Configured `bezelRimFilter` to dynamically neutralize warm reflection on non-26 channels (`saturate(0.05)`, cool tint for SMPTE/Snow, green for Oscilloscope).
+  - Set `.crt-bezel-rim-overlay` opacity to `1.0` on non-26 channels with expanded `strokeWidth="0.055"`.
+  - Added channel-specific workbench light spills (`.crt-workbench-spill-smpte`, `.crt-workbench-spill-green`).
 - **Verification:**
-  - `npm run build` passed with 0 errors in 29.47s.
-  - Verified live in Playwright:
-    - [`verify-prompt-on-screen.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-prompt-on-screen.png): Solid block cursor `█` ON phase with scanlines cutting through.
-    - [`verify-prompt-active-screen.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-prompt-active-screen.png): Cursor OFF phase showing clean `[ SCROLL TO ENTER ]`.
-    - [`verify-scrolled-overview.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-scrolled-overview.png): Successful click-triggered smooth scroll down to the overview deck.
+  - `npm run build` completed cleanly in 9.55s.
+  - Playwright visual audit across all channels (26, 02, 04, 07, 11, 13) confirmed 0 amber leak pixels in tube perimeter and clean neutral bezel reflection on Channel 04.
 
 ## Files Created or Modified
 - `d:\Projects\SenseHack\src\components\Hero.tsx`
-- `d:\Projects\SenseHack\src\components\OverviewDeck.tsx`
 - `d:\Projects\SenseHack\src\index.css`
 - `d:\Projects\SenseHack\PROGRESS.md`
-- `d:\Projects\SenseHack\walkthrough.md`
+
+## Next Immediate Action
+- Await user feedback.

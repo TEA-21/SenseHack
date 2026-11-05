@@ -399,13 +399,35 @@
   filter: blur(16px);
 }
 
-/* Stationary Tube Viewport Container (Aligned to physical phosphor glass apexes: X=204..1672, Y=183..1244) */
+.crt-workbench-spill-smpte {
+  background: radial-gradient(
+    ellipse 65% 45% at 50% 40%,
+    rgba(220, 225, 235, 0.22) 0%,
+    rgba(180, 190, 210, 0.09) 45%,
+    rgba(140, 150, 170, 0.02) 70%,
+    transparent 100%
+  );
+  filter: blur(16px);
+}
+
+.crt-workbench-spill-green {
+  background: radial-gradient(
+    ellipse 65% 45% at 50% 40%,
+    rgba(34, 197, 94, 0.24) 0%,
+    rgba(22, 163, 74, 0.10) 45%,
+    rgba(21, 128, 61, 0.02) 70%,
+    transparent 100%
+  );
+  filter: blur(16px);
+}
+
+/* Stationary Tube Viewport Container (Flanged to inner bezel shadow groove: X=180..1694, Y=160..1262) */
 .crt-tube-viewport {
   position: absolute;
-  left: 9.5775%;
-  top: 12.8873%;
-  width: 68.9202%;
-  height: 74.7183%;
+  left: 8.4507%;
+  top: 11.2676%;
+  width: 71.0798%;
+  height: 77.6056%;
   overflow: hidden;
 }
 

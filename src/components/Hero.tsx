@@ -439,13 +439,17 @@ export const Hero: React.FC = () => {
 
   // Localized Bezel Rim Bounce-Light Filter
   const bezelRimFilter = !isPowerOn
-    ? 'brightness(0.38) saturate(0.18) contrast(1.15)'
+    ? 'brightness(0.35) saturate(0) contrast(1.15)'
     : currentChannel === '02'
-    ? 'brightness(0.72) saturate(0.2) hue-rotate(180deg)'
+    ? 'brightness(0.72) saturate(0.05) hue-rotate(190deg)'
     : currentChannel === '04'
-    ? 'brightness(0.85) saturate(0.6)'
+    ? 'brightness(0.75) saturate(0.05) hue-rotate(200deg)'
+    : currentChannel === '11'
+    ? 'brightness(0.60) saturate(0.1)'
     : currentChannel === '13'
-    ? 'brightness(0.65) saturate(0.4) hue-rotate(90deg)'
+    ? 'brightness(0.68) saturate(0.6) hue-rotate(90deg)'
+    : currentChannel === '07'
+    ? 'brightness(0.65) saturate(0.8)'
     : 'none';
 
   return (
@@ -466,18 +470,18 @@ export const Hero: React.FC = () => {
       {/* SVG Optical System Definitions */}
       <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
         <defs>
-          {/* 1. Exact Calibrated Squircle Screen Mask for Tube Viewport (Local Coordinates) */}
+          {/* 1. Exact Calibrated Squircle Screen Mask for Tube Viewport (Groove-Aligned) */}
           <clipPath id="crt-tube-barrel" clipPathUnits="objectBoundingBox">
             <path
-              d="M 0.010 0.220 
-                 C 0.010 0.070, 0.070 0.012, 0.220 0.012 
-                 C 0.380 0.000, 0.620 0.000, 0.780 0.012 
-                 C 0.930 0.012, 0.990 0.070, 0.990 0.220 
-                 C 1.000 0.350, 1.000 0.630, 0.990 0.760 
-                 C 0.990 0.910, 0.930 0.988, 0.780 0.988 
-                 C 0.620 1.000, 0.380 1.000, 0.220 0.988 
-                 C 0.070 0.988, 0.010 0.910, 0.010 0.760 
-                 C 0.000 0.630, 0.000 0.350, 0.010 0.220 Z"
+              d="M 0.005 0.220 
+                 C 0.005 0.045, 0.045 0.006, 0.220 0.006 
+                 C 0.380 0.000, 0.620 0.000, 0.780 0.006 
+                 C 0.955 0.006, 0.995 0.045, 0.995 0.220 
+                 C 1.000 0.350, 1.000 0.650, 0.995 0.780 
+                 C 0.995 0.955, 0.955 0.994, 0.780 0.994 
+                 C 0.620 1.000, 0.380 1.000, 0.220 0.994 
+                 C 0.045 0.994, 0.005 0.955, 0.005 0.780 
+                 C 0.000 0.650, 0.000 0.350, 0.005 0.220 Z"
             />
           </clipPath>
 
@@ -496,12 +500,12 @@ export const Hero: React.FC = () => {
                  C 0.0845 0.6069, 0.0845 0.3873, 0.0916 0.2853 Z"
               fill="none"
               stroke="white"
-              strokeWidth="0.045"
+              strokeWidth="0.055"
               filter="url(#bezel-rim-blur)"
             />
           </mask>
           <filter id="bezel-rim-blur">
-            <feGaussianBlur stdDeviation="0.016" />
+            <feGaussianBlur stdDeviation="0.012" />
           </filter>
 
           {/* 3. Hardware-Accelerated Dynamic SVG Barrel Displacement Map (Full Channels) */}
@@ -567,6 +571,12 @@ export const Hero: React.FC = () => {
                 ? 'opacity-0'
                 : currentChannel === '02'
                 ? 'crt-workbench-spill-snow opacity-75'
+                : currentChannel === '04'
+                ? 'crt-workbench-spill-smpte opacity-75'
+                : currentChannel === '13'
+                ? 'crt-workbench-spill-green opacity-75'
+                : currentChannel === '11'
+                ? 'crt-workbench-spill-snow opacity-60'
                 : 'crt-workbench-spill-amber crt-spill-flicker opacity-90'
             }`}
           />
@@ -586,7 +596,7 @@ export const Hero: React.FC = () => {
             className="crt-bezel-rim-overlay"
             style={{
               filter: bezelRimFilter,
-              opacity: currentChannel === '26' && isPowerOn ? 0 : 0.88,
+              opacity: currentChannel === '26' && isPowerOn ? 0 : 1,
             }}
           >
             <img
@@ -618,10 +628,10 @@ export const Hero: React.FC = () => {
                     alt="SenseHack 26 Master Feed"
                     className="absolute select-none pointer-events-none crt-erratic-jitter crt-cathode-drift"
                     style={{
-                      width: '145.095%',
-                      height: '133.836%',
-                      left: '-13.896%',
-                      top: '-17.248%',
+                      width: '140.687%',
+                      height: '128.857%',
+                      left: '-11.889%',
+                      top: '-14.519%',
                       maxWidth: 'none',
                     }}
                   />
