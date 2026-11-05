@@ -537,6 +537,16 @@ export const Hero: React.FC = () => {
           {/* Pitch-Black Room: Outer Cabinet Shadow & Ambient Falloff */}
           <div className="crt-cabinet-shadow" />
 
+          {/* Right Hardware Control Deck: Ambient Illumination & Cathode Spill */}
+          <div className="crt-control-deck-illumination pointer-events-none">
+            <img
+              src="/crt-full-tight.png"
+              alt=""
+              className="crt-control-deck-plate select-none"
+            />
+            <div className="crt-control-deck-spill" />
+          </div>
+
           {/* TIER 2: Localized Inner Bezel Bounce-Light Overlay (Masked strictly to squircle rim) */}
           <div
             className="crt-bezel-rim-overlay"
