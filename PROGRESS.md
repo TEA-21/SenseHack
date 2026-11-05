@@ -1,29 +1,28 @@
 # PROGRESS.md
 
 ## Current Active Phase
-Phase 21 Complete: Bezel Reflection Alignment & Phosphor Glass Inset Calibration
+Phase 22 Complete: Endpoint-Pinned Convex Barrel Curvature (Text & Scanlines)
 
 ## Completed Steps & Exact Techniques/Libraries Used
-- **1:1 Base-Plate Lock for Channel 26 Broadcast ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
-  - Removed artificial displacement filter on Channel 26 feed image so letters line up 100% with the baked 3D bezel reflections on the left ("S") and right ("6").
-  - Recalibrated Channel 26 nested plate image scale and offsets (`width: 145.095%`, `height: 133.836%`, `left: -13.896%`, `top: -17.248%`).
-  - Preserved authentic CRT cathode jitter, chromatic drop-shadow drift, and scanline cut directly over the text.
-- **Physical Phosphor Glass Inset Snapping ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
-  - Snapped `.crt-tube-viewport` strictly to physical phosphor glass apexes ($X \in [204, 1672]$, $Y \in [183, 1244]$ in 2130x1420 space):
-    - `left: 9.5775%`, `top: 12.8873%`, `width: 68.9202%`, `height: 74.7183%`.
-- **Perimeter Scanline Alpha Feathering ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
-  - Added `-webkit-mask-image: radial-gradient(ellipse 96% 94% at 50% 50%, black 86%, transparent 100%)` to `.crt-ch26-scanline-cut` and `.crt-ch26-rolling-bar`.
-  - Scanlines and rolling hum-bars now dissolve smoothly into the dark tube groove without bleeding onto the outer plastic bezel.
+- **Mathematical Endpoint-Pinned Parabolic Map Generation ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
+  - Generated parabolic displacement field with quadratic envelope $(1 - u^2)$:
+    - $u = (x / 128) - 1 \in [-1, 1]$, $v = (y / 128) - 1 \in [-1, 1]$.
+    - $env = 1 - u^2$ (strictly 0 at edges $u = \pm 1$, 1 at center $u = 0$).
+    - $dx = -0.25 \cdot u \cdot env$ (zero horizontal displacement at both bezels).
+    - $dy = (0.55 - 0.40 \cdot v) \cdot env$ ($+5.5\text{ px}$ center baseline arch, zero vertical displacement at both bezels).
+- **Unified Cathode Tube Curvature Application ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
+  - Applied `filter: url(#crt-subtle-barrel-warp)` to Channel 26 viewport container.
+  - SENSE HACK '26 text, subtitle, and physical scanline cuts now arch in unison along the convex spherical curve of the CRT glass.
+  - Pinned endpoints guarantee "S" and "'26" remain 100% aligned with their physical bezel reflections.
 - **Verification:**
-  - `npm run build` passed with 0 errors in 26.38s.
+  - `npm run build` passed with 0 errors in 21.25s.
   - Playwright visual capture at 1440x900:
-    - [`verify-reflection-left.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-reflection-left.png): Left bezel reflection aligned precisely with "S".
-    - [`verify-reflection-right.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-reflection-right.png): Right bezel amber bounce reflection aligned precisely with "'26".
-    - [`verify-screen-full.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-screen-full.png): Full phosphor face showing clean glass groove boundary and zero scanline bleeding.
+    - [`verify-pinned-screen.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-pinned-screen.png): Authentic 5.5px upward baseline arch across SENSE HACK '26 and scanlines.
+    - [`verify-pinned-reflection-left.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-pinned-reflection-left.png): Left bezel reflection aligned 100% with "S".
+    - [`verify-pinned-reflection-right.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-pinned-reflection-right.png): Right bezel reflection aligned 100% with "'26".
 
 ## Files Created or Modified
 - `d:\Projects\SenseHack\src\components\Hero.tsx`
-- `d:\Projects\SenseHack\src\index.css`
 - `d:\Projects\SenseHack\PLAN.md`
 - `d:\Projects\SenseHack\PROGRESS.md`
 - `d:\Projects\SenseHack\walkthrough.md`

@@ -38,7 +38,7 @@ export const Hero: React.FC = () => {
   const snowCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const oscCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // 1. Dynamic SVG Displacement Map Generation on Mount
+  // 1. Dynamic SVG Displacement Map Generation on Mount (Endpoint-Pinned Convex Barrel Curvature)
   useEffect(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -52,16 +52,14 @@ export const Hero: React.FC = () => {
           const v = (y / 128) - 1; // [-1, 1]
           for (let x = 0; x < 256; x++) {
             const u = (x / 128) - 1; // [-1, 1]
-            const r2 = u * u + v * v;
-            const k = 1 + 0.22 * r2;
-            const uWarp = u * k;
-            const vWarp = v * k;
-            const dx = uWarp - u;
-            const dy = vWarp - v;
+            const u2 = Math.min(1.0, u * u);
+            const env = 1.0 - u2; // 0 at edges (u=+-1), 1 at center (u=0)
+            const dx = -0.25 * u * env;
+            const dy = (0.55 - 0.40 * v) * env;
 
             const idx = (y * 256 + x) * 4;
-            data[idx] = Math.max(0, Math.min(255, Math.round(128 + 127 * dx)));     // R = X displacement
-            data[idx + 1] = Math.max(0, Math.min(255, Math.round(128 + 127 * dy))); // G = Y displacement
+            data[idx] = Math.max(0, Math.min(255, Math.round(128 + 127 * dx)));     // R = X displacement (0 at edges)
+            data[idx + 1] = Math.max(0, Math.min(255, Math.round(128 + 127 * dy))); // G = Y displacement (0 at edges)
             data[idx + 2] = 128; // B neutral
             data[idx + 3] = 255;
           }
@@ -516,7 +514,7 @@ export const Hero: React.FC = () => {
             <feDisplacementMap
               in="SourceGraphic"
               in2="warpMap"
-              scale="14"
+              scale="10"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -583,9 +581,12 @@ export const Hero: React.FC = () => {
                 isPowerOn ? '' : 'crt-beam-off'
               }`}
             >
-              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast Locked 1:1 with Bezel Reflections */}
+              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast with Endpoint-Pinned Curvature */}
               {currentChannel === '26' && (
-                <div className="w-full h-full relative crt-ambient-flicker overflow-hidden">
+                <div
+                  className="w-full h-full relative crt-ambient-flicker overflow-hidden"
+                  style={{ filter: 'url(#crt-subtle-barrel-warp)' }}
+                >
                   <img
                     src="/crt-full-tight.png"
                     alt="SenseHack 26 Master Feed"
