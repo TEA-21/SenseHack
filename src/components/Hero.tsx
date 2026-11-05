@@ -71,10 +71,12 @@ export const Hero: React.FC = () => {
         const feImg = document.getElementById('barrel-fe-image');
         if (feImg) {
           feImg.setAttribute('href', dataUrl);
+          feImg.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataUrl);
         }
         const feImgSubtle = document.getElementById('barrel-fe-image-subtle');
         if (feImgSubtle) {
           feImgSubtle.setAttribute('href', dataUrl);
+          feImgSubtle.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataUrl);
         }
       }
     } catch (e) {
@@ -479,8 +481,17 @@ export const Hero: React.FC = () => {
           </filter>
 
           {/* 3. Hardware-Accelerated Dynamic SVG Barrel Displacement Map (Full Channels) */}
-          <filter id="crt-barrel-distortion" x="-10%" y="-10%" width="120%" height="120%">
-            <feImage id="barrel-fe-image" href="" result="warpMap" />
+          <filter id="crt-barrel-distortion" x="0%" y="0%" width="100%" height="100%">
+            <feImage
+              id="barrel-fe-image"
+              href=""
+              result="warpMap"
+              preserveAspectRatio="none"
+              x="0%"
+              y="0%"
+              width="100%"
+              height="100%"
+            />
             <feDisplacementMap
               in="SourceGraphic"
               in2="warpMap"
@@ -491,8 +502,17 @@ export const Hero: React.FC = () => {
           </filter>
 
           {/* 4. Subdued Authentic Barrel Warp for CH 26 Broadcast Plate */}
-          <filter id="crt-subtle-barrel-warp" x="-10%" y="-10%" width="120%" height="120%">
-            <feImage id="barrel-fe-image-subtle" href="" result="warpMap" />
+          <filter id="crt-subtle-barrel-warp" x="0%" y="0%" width="100%" height="100%">
+            <feImage
+              id="barrel-fe-image-subtle"
+              href=""
+              result="warpMap"
+              preserveAspectRatio="none"
+              x="0%"
+              y="0%"
+              width="100%"
+              height="100%"
+            />
             <feDisplacementMap
               in="SourceGraphic"
               in2="warpMap"
