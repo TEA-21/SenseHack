@@ -72,6 +72,10 @@ export const Hero: React.FC = () => {
         if (feImg) {
           feImg.setAttribute('href', dataUrl);
         }
+        const feImgSubtle = document.getElementById('barrel-fe-image-subtle');
+        if (feImgSubtle) {
+          feImgSubtle.setAttribute('href', dataUrl);
+        }
       }
     } catch (e) {
       console.warn('SVG displacement map init:', e);
@@ -474,13 +478,25 @@ export const Hero: React.FC = () => {
             <feGaussianBlur stdDeviation="0.016" />
           </filter>
 
-          {/* 3. Hardware-Accelerated Dynamic SVG Barrel Displacement Map */}
+          {/* 3. Hardware-Accelerated Dynamic SVG Barrel Displacement Map (Full Channels) */}
           <filter id="crt-barrel-distortion" x="-10%" y="-10%" width="120%" height="120%">
             <feImage id="barrel-fe-image" href="" result="warpMap" />
             <feDisplacementMap
               in="SourceGraphic"
               in2="warpMap"
               scale="24"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+
+          {/* 4. Subdued Authentic Barrel Warp for CH 26 Broadcast Plate */}
+          <filter id="crt-subtle-barrel-warp" x="-10%" y="-10%" width="120%" height="120%">
+            <feImage id="barrel-fe-image-subtle" href="" result="warpMap" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="warpMap"
+              scale="14"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -547,13 +563,16 @@ export const Hero: React.FC = () => {
                 isPowerOn ? '' : 'crt-beam-off'
               }`}
             >
-              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast */}
+              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast with Subtle 3D Curvature & Chromatic Drift */}
               {currentChannel === '26' && (
-                <div className="w-full h-full relative crt-rolling-humbar crt-ambient-flicker">
+                <div
+                  className="w-full h-full relative crt-rolling-humbar crt-ambient-flicker"
+                  style={{ filter: 'url(#crt-subtle-barrel-warp)' }}
+                >
                   <img
                     src="/crt-full-tight.png"
                     alt="SenseHack 26 Master Feed"
-                    className="absolute select-none pointer-events-none crt-erratic-jitter"
+                    className="absolute select-none pointer-events-none crt-erratic-jitter crt-cathode-drift"
                     style={{
                       width: '140.13%',
                       height: '127.47%',

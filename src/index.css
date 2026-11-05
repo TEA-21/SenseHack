@@ -557,6 +557,34 @@
   opacity: 0.5;
 }
 
+/* Authentic Analog CRT Chromatic RGB Fringe & Cathode Drift */
+@keyframes crtCathodeDrift {
+  0%, 100% {
+    filter: drop-shadow(-1.0px 0 0.4px rgba(255, 45, 0, 0.42))
+            drop-shadow(1.0px 0 0.4px rgba(0, 180, 255, 0.32));
+    transform: translate(0, 0);
+  }
+  25% {
+    filter: drop-shadow(-1.3px 0.3px 0.5px rgba(255, 45, 0, 0.48))
+            drop-shadow(1.2px -0.2px 0.5px rgba(0, 180, 255, 0.36));
+    transform: translate(0.3px, -0.2px);
+  }
+  50% {
+    filter: drop-shadow(-0.9px -0.2px 0.4px rgba(255, 45, 0, 0.38))
+            drop-shadow(1.3px 0.2px 0.5px rgba(0, 180, 255, 0.40));
+    transform: translate(-0.2px, 0.3px);
+  }
+  75% {
+    filter: drop-shadow(-1.2px 0 0.5px rgba(255, 45, 0, 0.45))
+            drop-shadow(0.9px 0 0.4px rgba(0, 180, 255, 0.30));
+    transform: translate(-0.3px, -0.1px);
+  }
+}
+
+.crt-cathode-drift {
+  animation: crtCathodeDrift 3.6s ease-in-out infinite;
+}
+
 /* Accessibility: Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .crt-rolling-humbar::before {
