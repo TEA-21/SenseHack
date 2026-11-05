@@ -146,44 +146,6 @@
   );
 }
 
-/* Realistic Ambient Illumination on Right Hardware Control Deck */
-.crt-control-deck-illumination {
-  position: absolute;
-  left: 80.5%;
-  top: 11.2%;
-  width: 16.5%;
-  height: 77.5%;
-  pointer-events: none;
-  z-index: 3;
-  overflow: hidden;
-}
-
-.crt-control-deck-plate {
-  position: absolute;
-  width: 606%; /* 100% / 16.5% */
-  height: 129%; /* 100% / 77.5% */
-  left: -488%; /* -80.5% / 16.5% */
-  top: -14.4%; /* -11.2% / 77.5% */
-  max-width: none;
-  filter: brightness(1.36) contrast(1.12);
-  mix-blend-mode: screen;
-  opacity: 0.85;
-}
-
-.crt-control-deck-spill {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(255, 140, 20, 0.12) 0%,
-    rgba(255, 190, 80, 0.05) 25%,
-    rgba(255, 255, 255, 0.03) 65%,
-    transparent 100%
-  );
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
 /* Wide rolling hum-bar (replaces dense CSS scanlines to avoid moiré clashes) */
 .crt-rolling-humbar::before {
   content: "";
