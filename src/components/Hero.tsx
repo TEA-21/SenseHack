@@ -291,6 +291,32 @@ export const Hero: React.FC = () => {
     osdChanTimerRef.current = window.setTimeout(() => setOsdChannel(null), 1800);
   };
 
+  // Interactive Blinking Prompt Smooth Scroll
+  const handlePromptClick = () => {
+    const ctx = getOrCreateAudioContext();
+    if (ctx && ctx.state === 'running' && masterGainRef.current) {
+      try {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.05);
+        g.gain.setValueAtTime(0.04, ctx.currentTime);
+        g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.05);
+        osc.connect(g);
+        g.connect(masterGainRef.current);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+      } catch {}
+    }
+
+    const target = document.getElementById('overview') || document.getElementById('register');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: window.innerHeight * 0.9, behavior: 'smooth' });
+    }
+  };
+
   // Power Rocker Switch Toggle
   const handlePowerToggle = () => {
     const nextPower = !isPowerOn;
@@ -599,6 +625,17 @@ export const Hero: React.FC = () => {
                       maxWidth: 'none',
                     }}
                   />
+
+                  {/* Blinking Bitmap Prompt in Lower Third */}
+                  <button
+                    type="button"
+                    onClick={handlePromptClick}
+                    aria-label="Scroll to enter"
+                    className="crt-bitmap-prompt pointer-events-auto"
+                  >
+                    <span>[ SCROLL TO ENTER ]</span>
+                    <span className="crt-prompt-cursor" aria-hidden="true" />
+                  </button>
 
                   {/* Physical Scanlines & Rolling Humbar Cutting OVER CH 26 Broadcast Text */}
                   <div className="crt-ch26-scanline-cut" />

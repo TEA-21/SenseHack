@@ -625,6 +625,62 @@
   mask-image: radial-gradient(ellipse 96% 94% at 50% 50%, black 86%, transparent 100%);
 }
 
+/* Blinking Bitmap Prompt in Lower Third */
+.crt-bitmap-prompt {
+  position: absolute;
+  bottom: 19%;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(11px, 1.6vw, 19px);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: #ffaa1d;
+  text-shadow: 
+    0 0 8px rgba(255, 170, 29, 0.9),
+    0 0 20px rgba(255, 120, 0, 0.55);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 15;
+  text-transform: uppercase;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
+}
+
+.crt-bitmap-prompt:hover {
+  filter: brightness(1.25) drop-shadow(0 0 10px rgba(255, 170, 29, 0.8));
+  transform: scale(1.02);
+}
+
+.crt-bitmap-prompt:active {
+  transform: scale(0.98);
+}
+
+/* Authentic 1Hz Retro Square-Wave Block Cursor */
+.crt-prompt-cursor {
+  display: inline-block;
+  width: 0.65em;
+  height: 1.1em;
+  vertical-align: -0.18em;
+  background-color: #ffaa1d;
+  box-shadow: 0 0 10px #ffaa1d;
+  animation: crtCursorBlink 1s step-end infinite;
+}
+
+@keyframes crtCursorBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 /* Accessibility: Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .crt-rolling-humbar::before {

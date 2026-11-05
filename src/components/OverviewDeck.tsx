@@ -37,7 +37,7 @@ export const OverviewDeck: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-16 bg-crt-bg border-b border-crt-border relative">
+    <section id="overview" className="py-16 bg-crt-bg border-b border-crt-border relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
         
         {/* Edition Pill */}
