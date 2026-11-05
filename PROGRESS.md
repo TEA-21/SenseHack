@@ -1,24 +1,29 @@
 # PROGRESS.md
 
 ## Current Active Phase
-Phase 20 Complete: Text Edge Cutoff & Displacement Map Seam Correction
+Phase 21 Complete: Bezel Reflection Alignment & Phosphor Glass Inset Calibration
 
 ## Completed Steps & Exact Techniques/Libraries Used
-- **Root Cause Analysis:**
-  - `<feImage>` in SVG `#crt-subtle-barrel-warp` and `#crt-barrel-distortion` lacked `preserveAspectRatio="none"`.
-  - Default SVG `xMidYMid meet` pillarboxed the 256x256 square warp map inside rectangular viewports ($1.364:1$), leaving empty $(0, 0, 0, 0)$ transparent margins at outer 13.3% edges.
-  - In `feDisplacementMap`, $R = 0$ produced an instantaneous $-7\text{ px}$ step-discontinuity slice right through the leftmost "S" in "SENSE" and the rightmost "6" in "'26".
-- **SVG Optical Subregion & Aspect Ratio Correction ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
-  - Added `preserveAspectRatio="none"` to both `barrel-fe-image` and `barrel-fe-image-subtle`.
-  - Bound filter subregion to `x="0%" y="0%" width="100%" height="100%"` so the parabolic barrel displacement field stretches uniformly across the entire phosphor face.
-  - Added `xlink:href` attribute fallback in `useEffect` alongside `href`.
+- **1:1 Base-Plate Lock for Channel 26 Broadcast ([`src/components/Hero.tsx`](file:///d:/Projects/SenseHack/src/components/Hero.tsx)):**
+  - Removed artificial displacement filter on Channel 26 feed image so letters line up 100% with the baked 3D bezel reflections on the left ("S") and right ("6").
+  - Recalibrated Channel 26 nested plate image scale and offsets (`width: 145.095%`, `height: 133.836%`, `left: -13.896%`, `top: -17.248%`).
+  - Preserved authentic CRT cathode jitter, chromatic drop-shadow drift, and scanline cut directly over the text.
+- **Physical Phosphor Glass Inset Snapping ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
+  - Snapped `.crt-tube-viewport` strictly to physical phosphor glass apexes ($X \in [204, 1672]$, $Y \in [183, 1244]$ in 2130x1420 space):
+    - `left: 9.5775%`, `top: 12.8873%`, `width: 68.9202%`, `height: 74.7183%`.
+- **Perimeter Scanline Alpha Feathering ([`src/index.css`](file:///d:/Projects/SenseHack/src/index.css)):**
+  - Added `-webkit-mask-image: radial-gradient(ellipse 96% 94% at 50% 50%, black 86%, transparent 100%)` to `.crt-ch26-scanline-cut` and `.crt-ch26-rolling-bar`.
+  - Scanlines and rolling hum-bars now dissolve smoothly into the dark tube groove without bleeding onto the outer plastic bezel.
 - **Verification:**
-  - `npm run build` passed with 0 errors in 25.70s.
-  - Playwright visual capture:
-    - [`crop-left-s.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/crop-left-s.png): Macro inspection of "S" confirming full outer curve and smooth glow with zero vertical cuts.
-    - [`crop-right-full-6.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/crop-right-full-6.png): Macro inspection of "6" confirming smooth continuous curve with zero vertical slicing.
-    - [`crop-aspect-fixed.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/crop-aspect-fixed.png): Entire broadcast text screen with seamless phosphor curvature.
+  - `npm run build` passed with 0 errors in 26.38s.
+  - Playwright visual capture at 1440x900:
+    - [`verify-reflection-left.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-reflection-left.png): Left bezel reflection aligned precisely with "S".
+    - [`verify-reflection-right.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-reflection-right.png): Right bezel amber bounce reflection aligned precisely with "'26".
+    - [`verify-screen-full.png`](file:///C:/Users/user/.gemini/antigravity/brain/62fae0a2-57b2-41b2-8c76-8d29cba083c3/verify-screen-full.png): Full phosphor face showing clean glass groove boundary and zero scanline bleeding.
 
 ## Files Created or Modified
 - `d:\Projects\SenseHack\src\components\Hero.tsx`
+- `d:\Projects\SenseHack\src\index.css`
+- `d:\Projects\SenseHack\PLAN.md`
 - `d:\Projects\SenseHack\PROGRESS.md`
+- `d:\Projects\SenseHack\walkthrough.md`

@@ -1,4 +1,4 @@
-# PLAN: Sense Hack '26 Sleek Portal Website (Revision 5)
+# PLAN: Sense Hack '26 Sleek Portal Website (Revision 6)
 
 ## Architectural & Technical Specifications
 
@@ -22,14 +22,18 @@
    - Auto-computes `totalMembers = Number(maleCount) + Number(femaleCount)`.
    - Enforces `new Date(departureDate) >= new Date(arrivalDate)` with inline error feedback.
 
-5. **Build Pipeline & Config:**
-   - Explicit `postcss.config.js`.
-   - `package.json` script: `"build": "tsc && vite build"` to catch TypeScript errors during automated checks.
+5. **Physical CRT Alignment & Glass Boundary Calibration (Phase 21):**
+   - 1:1 Base-Plate Lock: Remove displacement drift from Channel 26 feed image so letters line up with physical bezel reflections.
+   - Viewport boundary recalibration: $X \in [204, 1672]$, $Y \in [183, 1244]$ in 2130x1420 image space.
+   - Nested plate image alignment: `left: -13.896%`, `top: -17.248%`, `width: 145.095%`, `height: 133.836%`.
+   - Scanline perimeter alpha feather: 12px smooth gradient so scanlines never bleed outside the glass face.
 
 ## Execution Phases
-- **Phase 1: Project Scaffolding & Root Configuration:** Vite React app with TypeScript, `postcss.config.js`, `tsconfig.json`, `index.html`, `tailwind.config.js`, `three`, `lucide-react`.
-- **Phase 2: Central Data Store & Strict Interfaces:** `hackathonData.ts` with 2026 dates, schedule, prizes, tracks, winners, FAQs, and guarded URL builder.
-- **Phase 3: Interactive 3D WebGL Hero & Dynamic Navbar:** Mount-only Three.js procedural mainframe with zero-cost rAF pause, delta accumulation, mobile `touch-pan-y`, and dual-threshold `IntersectionObserver` navbar.
-- **Phase 4: Registration Hub, Schedule & Content Sections:** Dual registration cards, 36H schedule, About IEEE/ComSoc/SENSE, 7 tracks, and past winners.
-- **Phase 5: Actionable Forms Suite & FAQ Accordion:** `localStorage` persistence, clear draft, accommodation validation, clipboard try/catch + modal textarea payload preview, and FAQ accordion.
-- **Phase 6: E2E Verification & Visual QA:** `npm run build` (`tsc && vite build`), browser verification, form persistence test, and screenshot audit.
+- **Phase 1 to 20:** Prior iterations (scaffolding, audio, photographic CRT unit, channels, control deck exposure, aspect ratio fixes).
+- **Phase 21: Bezel Reflection Alignment & Glass Boundary Inset:**
+  1. Remove `url(#crt-subtle-barrel-warp)` from Channel 26 image plate to achieve 1:1 lock with bezel reflections.
+  2. Recalibrate `.crt-tube-viewport` in `src/index.css` to match physical glass boundaries ($9.577\% \text{ left}, 12.887\% \text{ top}, 68.920\% \text{ width}, 74.718\% \text{ height}$).
+  3. Recalibrate inner image positioning in `src/components/Hero.tsx` to match the new viewport.
+  4. Recalibrate SVG `#crt-tube-barrel` squircle path.
+  5. Add perimeter alpha feather mask to scanlines and rolling hum-bar.
+  6. E2E verification in Playwright (macro crops of bezel reflections + full unit).

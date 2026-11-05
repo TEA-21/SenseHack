@@ -583,21 +583,18 @@ export const Hero: React.FC = () => {
                 isPowerOn ? '' : 'crt-beam-off'
               }`}
             >
-              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast with Subtle 3D Curvature & Chromatic Drift */}
+              {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast Locked 1:1 with Bezel Reflections */}
               {currentChannel === '26' && (
-                <div
-                  className="w-full h-full relative crt-ambient-flicker overflow-hidden"
-                  style={{ filter: 'url(#crt-subtle-barrel-warp)' }}
-                >
+                <div className="w-full h-full relative crt-ambient-flicker overflow-hidden">
                   <img
                     src="/crt-full-tight.png"
                     alt="SenseHack 26 Master Feed"
                     className="absolute select-none pointer-events-none crt-erratic-jitter crt-cathode-drift"
                     style={{
-                      width: '140.13%',
-                      height: '127.47%',
-                      left: '-11.84%',
-                      top: '-14.36%',
+                      width: '145.095%',
+                      height: '133.836%',
+                      left: '-13.896%',
+                      top: '-17.248%',
                       maxWidth: 'none',
                     }}
                   />
