@@ -355,6 +355,14 @@
   margin: 0 auto;
   aspect-ratio: 2130 / 1420;
   user-select: none;
+  transition: transform 0.3s ease;
+}
+
+/* Desktop Optical Text Centering: Nudge entire TV unit right by 6.48% so SENSE HACK text lands at 50vw */
+@media (min-width: 768px) {
+  .crt-text-centered {
+    transform: translateX(6.48%);
+  }
 }
 
 /* Atmospheric Hardware-Lab Workbench Light Spill */

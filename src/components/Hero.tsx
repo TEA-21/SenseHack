@@ -498,7 +498,7 @@ export const Hero: React.FC = () => {
             - Precision Photographic Rotary Inner Knob Overlays (125px Diameter)
             - Dynamic Hardware-Lab Workbench Amber/Cool Light Spill
             ========================================================================== */}
-        <div id="crt-tv-stage" className="crt-tv-stage">
+        <div id="crt-tv-stage" className="crt-tv-stage crt-text-centered">
           
           {/* Dynamic Desk Workbench Light Spill (Reacts to Power & Channel) */}
           <div
