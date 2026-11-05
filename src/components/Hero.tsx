@@ -566,7 +566,7 @@ export const Hero: React.FC = () => {
               {/* CHANNEL 26: Authentic SENSE HACK '26 Broadcast with Subtle 3D Curvature & Chromatic Drift */}
               {currentChannel === '26' && (
                 <div
-                  className="w-full h-full relative crt-rolling-humbar crt-ambient-flicker"
+                  className="w-full h-full relative crt-ambient-flicker overflow-hidden"
                   style={{ filter: 'url(#crt-subtle-barrel-warp)' }}
                 >
                   <img
@@ -581,6 +581,10 @@ export const Hero: React.FC = () => {
                       maxWidth: 'none',
                     }}
                   />
+
+                  {/* Physical Scanlines & Rolling Humbar Cutting OVER CH 26 Broadcast Text */}
+                  <div className="crt-ch26-scanline-cut" />
+                  <div className="crt-ch26-rolling-bar" />
                 </div>
               )}
 

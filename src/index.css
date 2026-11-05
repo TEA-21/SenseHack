@@ -585,6 +585,41 @@
   animation: crtCathodeDrift 3.6s ease-in-out infinite;
 }
 
+/* Physical Scanlines & Rolling Humbar Cutting OVER CH 26 Broadcast Text */
+.crt-ch26-scanline-cut {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.38) 2px,
+    rgba(0, 0, 0, 0.38) 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+.crt-ch26-rolling-bar {
+  position: absolute;
+  inset: -100% 0;
+  pointer-events: none;
+  z-index: 21;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.35) 48%,
+    rgba(0, 0, 0, 0.50) 50%,
+    rgba(0, 0, 0, 0.35) 52%,
+    transparent 100%
+  );
+  background-size: 100% 340px;
+  animation: humBarRoll 7.5s linear infinite;
+  mix-blend-mode: multiply;
+  will-change: transform;
+}
+
 /* Accessibility: Prefers Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .crt-rolling-humbar::before {
