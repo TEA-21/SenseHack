@@ -126,7 +126,7 @@ export function createShell() {
       if (!target) return;
       e.preventDefault();
       setMenu(false);
-      const y = target.getBoundingClientRect().top + window.scrollY - 82;
+      const y = target.getBoundingClientRect().top + window.scrollY;  // each page pads itself below the fixed bar
       scrollToY(Math.max(0, y));
       history.replaceState(null, '', `#${id}`);
     });

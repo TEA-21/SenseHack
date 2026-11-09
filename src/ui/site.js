@@ -41,3 +41,16 @@ form.addEventListener('submit', async event => {
     feedback.textContent = `${error.message} If this continues, email ieee@vit.ac.in directly.`;
   } finally { button.disabled = false; button.textContent = 'Send query ↗'; }
 });
+
+// Highlight the nav link for the page currently on screen.
+const navLinks = [...document.querySelectorAll('.links a')];
+const watched = [...document.querySelectorAll('.pg'), document.getElementById('top')].filter(Boolean);
+if ('IntersectionObserver' in window && watched.length) {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === `#${entry.target.id}`));
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  watched.forEach(el => io.observe(el));
+}
