@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 import { V, sstep, bump, monotone, fontsReady } from './lib/utils.js';
+import { P_CUT, G, Q_DISKS, DISK_N, warp as timelineAt, diskScroll, diskAmt } from './lib/timeline.js';
 import { createShell, REDUCE } from './ui/shell.js';
 import { startCountdown } from './ui/countdown.js';
 import { startBoot } from './ui/boot.js';
@@ -10,6 +11,7 @@ import { createCursor } from './ui/cursor.js';
 import { createLayers } from './ui/layers.js';
 import { createTV, SCREEN } from './scene/tv.js';
 import { createWorld, pathPoint, WORLD_Z0 } from './scene/world.js';
+import { BOX_FIT } from './scene/diskbox.js';
 import { createPost } from './scene/post.js';
 import { redrawLabels } from './scene/props.js';
 
@@ -36,16 +38,24 @@ function run(renderer) {
   const tv = createTV(envTex);
   const post = createPost(renderer, tv.scene, tv.camera);
   const cursor = createCursor();
-  const layers = createLayers(shell.railButtons);
+  const layers = createLayers(shell.railButtons, shell);
 
   fontsReady.then(() => {
     redrawLabels();
+    world.diskBox.redraw();
     tv.refreshText();
   });
 
-  const P_CUT = .16;
-  const zDiskCam = world.diskPos.z + 6.2;
-  const depthAt = monotone([[0, WORLD_Z0], [.10, 3.5], [.40, -58], [.47, zDiskCam], [.62, zDiskCam - .8], [.73, -101], [.80, -128], [1, -156]]);
+  // Camera depth along the tunnel for each q. The camera never stops: it drifts on through the
+  // gaps between chapters and ends up `boxDist` in front of the floppy box.
+  let depthAt = () => WORLD_Z0, boxDist = 6;
+  const boxTarget = world.diskPos.clone().add(V(0, BOX_FIT.midY, 0));
+  const boxAim = (q) => sstep(.600, .628, q) * (1 - sstep(.655, .685, q));
+  function buildDepth() {
+    const zBox = world.diskPos.z + boxDist;
+    depthAt = monotone([[0, WORLD_Z0], [.10, 3.5], [.40, -58], [.47, -63], [.55, -66], [.5525, -66.6], [.5755, zBox + 12],
+      [.60, zBox + 6], [.63, zBox], [Q_DISKS, zBox - .5], [.70, -97], [.745, -106], [.80, -128], [1, -156]]);
+  }
 
   let W = 0, H = 0, portrait = false, baseFov = 50;
   function resize() {
@@ -61,6 +71,14 @@ function run(renderer) {
     baseFov = portrait ? 64 : 50;
     tv.camera.fov = portrait ? 52 : 40;
     tv.camera.updateProjectionMatrix();
+
+    // How far back the camera must sit so the whole box AND a fully raised disk fit in the
+    // part of the screen that is not covered by the text (right ~half; below the nav bar).
+    const tf = Math.tan(THREE.MathUtils.degToRad(baseFov / 2));
+    const byH = BOX_FIT.h / (2 * tf * (portrait ? .42 : .68));
+    const byW = BOX_FIT.w / (2 * tf * (W / H) * (portrait ? .92 : .52));
+    boxDist = Math.min(14, Math.max(byH, byW));
+    buildDepth();
   }
   addEventListener('resize', resize);
   resize();
@@ -160,8 +178,12 @@ function run(renderer) {
     frameN++;
 
     const rect = shell.track.getBoundingClientRect();
+    document.documentElement.classList.toggle('intro-finished', rect.bottom < innerHeight * .2);
     const max = rect.height - innerHeight;
-    const p = max > 0 ? Math.min(1, Math.max(0, -rect.top / max)) : 0;
+    const pr = max > 0 ? Math.min(1, Math.max(0, -rect.top / max)) : 0;
+    // pr = real scroll position; p = position on the original intro timeline;
+    // g = progress through the gallery hold that sits after "By the numbers".
+    const { p, g } = timelineAt(pr);
     const q = Math.max(0, (p - P_CUT) / (1 - P_CUT));
     const ease = 1 - Math.exp(-dt * 3);
     mouse.x += (mouse.tx - mouse.x) * ease;
@@ -213,6 +235,7 @@ function run(renderer) {
       world.screenCamera.position.set(mouse.x * .5, -mouse.y * .3, WORLD_Z0);
       world.screenCamera.lookAt(0, 0, WORLD_Z0 - 10);
       world.camLight.position.copy(world.screenCamera.position);
+      world.diskBox.group.visible = false;   // the box only exists once the camera reaches it
       if (u.uMix.value < .999 || frameN % 6 === 0) {
         world.glow.visible = true;
         renderer.setRenderTarget(tv.worldTarget);
@@ -222,6 +245,7 @@ function run(renderer) {
 
       post.retro.uCRT.value = 0;
       post.retro.uGlitch.value = sstep(.9, 1, r) * .5 + s.burst * .8;
+      post.retro.uSmear.value = 0;
       post.retro.uAb.value = .006 + sstep(.7, 1, r) * .01;
       prevZ = null;
       warp = 0;
@@ -233,20 +257,35 @@ function run(renderer) {
       warp += (Math.min(1, speed / 45) - warp) * (1 - Math.exp(-dt * 4));
 
       const pos = pathPoint(z);
+      const aim = boxAim(q);
+      // Frame the box: slightly above it, looking down a touch.
+      pos.x += (boxTarget.x + .12 - pos.x) * aim;
+      pos.y += (boxTarget.y + .85 - pos.y) * aim;
       const inside = sstep(2, -8, z), outside = sstep(-121, -132, z);
       const amp = (1 - inside) * .5 + inside * .22 + outside * .6;
       cam.position.copy(pos).add(tmp.set(mouse.x * amp, -mouse.y * amp * .6, 0));
       look.copy(pathPoint(z - 10));
-      look.lerp(world.diskPos, bump(.43, .47, .61, .65, q));
+      look.lerp(boxTarget, aim);
       look.add(tmp.set(mouse.x * amp * .3, -mouse.y * amp * .2 + outside * Math.sin(time * .2) * 1.2, 0));
       cam.lookAt(look);
       const ahead = pathPoint(z - 4);
       cam.rotateZ(-mouse.x * .04 - inside * (1 - outside) * (ahead.x - pos.x) * .9 + warp * Math.sin(time * 1.3) * .03);
       world.camLight.position.copy(cam.position);
 
-      const shift = bump(.42, .47, .6, .64, q);
+      // Camera pan (scene slides sideways so the text / photos / box get their own side):
+      //   numbers : tunnel to the right (text on the left), then back to centre while we drift on
+      //   gallery : tunnel swings left (photos on the right) and back again
+      //   box     : tunnel to the right again (copy on the left, box on the right)
+      const [, n1] = G.numOut, [t1a, t1b] = G.travel1, [ga, gb] = G.gallery, [, t2b] = G.travel2;
+      const shiftNum = sstep(.42, .47, q) * (1 - sstep(0, n1 + .045, g));
+      const shiftGal = sstep(t1b - .05, t1b + .02, g) * (1 - sstep(gb - .03, gb + .03, g));
+      const shiftBox = sstep(gb + .045, t2b, g) * (1 - sstep(.645, .675, q))
+        * (1 - sstep(G.disks[1] - .04, G.disks[1], g));
+      const shiftUp = shiftNum + shiftGal;   // portrait: numbers + gallery panels sit at the bottom
       cam.fov = baseFov + warp * 16;
-      cam.setViewOffset(W, H, portrait ? 0 : -W * .2 * shift, portrait ? H * .17 * shift : 0, W, H);
+      cam.setViewOffset(W, H,
+        portrait ? 0 : W * (.2 * shiftGal - .2 * shiftNum - .22 * shiftBox),
+        portrait ? H * (.17 * shiftUp - .08 * shiftBox) : 0, W, H);
       post.show(world.scene, cam);
       world.glow.visible = z > -123;
       world.glow.scale.setScalar(46 + sstep(-90, -122, z) * 40);
@@ -259,6 +298,18 @@ function run(renderer) {
       post.retro.uCRT.value = 1 - sstep(0, .08, q);
 
       world.updateDisk({ time, dt, q, mouse, motion });
+
+      // Floppy box: it arrives while we drift in, each scroll step lifts one disk out, and it
+      // is gone again by the time SIGNAL LOST breaks the picture up.
+      const ds = diskScroll(g);
+      const amts = Array.from({ length: DISK_N }, (_, i) => diskAmt(i, ds));
+      const boxIn = sstep(G.travel2[0] + .02, G.travel2[1] - .005, g)
+        * (1 - sstep(.655, .675, q))
+        * (1 - sstep(G.disks[1] - .04, G.disks[1], g));
+      world.diskBox.update({ time, amts, boxIn, mouse, motion, base: world.diskPos });
+
+      // Signal lost -> static site: the picture tears into streaks and blows out to cream.
+      post.retro.uSmear.value = sstep(.765, .955, q);
     }
 
     if (cursor.fine && frameN % 2 === 0 && mouse.moved) {
@@ -271,7 +322,7 @@ function run(renderer) {
     }
     cursor.update(dt);
 
-    layers({ p, q, inWorld: mode === 'world', glitch: post.retro.uGlitch.value, z, speed });
+    layers({ p, pr, q, g, inWorld: mode === 'world', glitch: post.retro.uGlitch.value, z, speed });
 
     post.retro.uTime.value = time;
     post.render();

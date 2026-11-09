@@ -1,161 +1,65 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sense Hack 26</title>
-<meta name="description" content="SENSE HACK '26 — IEEE-VIT × IEEE ComSoc. A 36-hour national flagship hackathon, December 9–10, 2026, Anna Auditorium, VIT Vellore.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SenseHack '26 — Build What Matters</title>
+<meta name="description" content="SENSE HACK '26 — IEEE-VIT × IEEE ComSoc. A 36-hour national flagship hackathon, December 9–10, 2026, VIT Vellore.">
+<meta name="theme-color" content="#0a0807">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Unbounded:wght@500;700;900&display=swap">
 </head>
 <body>
-<div class="fallback" aria-hidden="true"></div>
-<canvas id="gl" aria-hidden="true"></canvas>
-<div class="flash" id="flash" aria-hidden="true"></div>
-
-<div class="boot" id="boot" role="status" aria-live="polite">
-  <div class="boot-box">
-    <pre class="boot-log" id="bootLog"></pre>
-    <div class="boot-bar"><i id="bootBar"></i></div>
-    <div class="boot-row"><span id="bootPct">000%</span><button class="boot-skip" id="bootSkip">Skip ▸</button></div>
-  </div>
-</div>
-
-<header class="top">
-  <div class="ticker" aria-label="Announcements">
-    <div class="ticker-track">
-      <span>Sense Hack '26 · December 9–10, 2026</span><span>Anna Auditorium · VIT Vellore</span><span>36-hour national flagship hackathon</span><span>7 tracks · Registrations open</span><span>IEEE-VIT × IEEE ComSoc</span>
-      <span aria-hidden="true">Sense Hack '26 · December 9–10, 2026</span><span aria-hidden="true">Anna Auditorium · VIT Vellore</span><span aria-hidden="true">36-hour national flagship hackathon</span><span aria-hidden="true">7 tracks · Registrations open</span><span aria-hidden="true">IEEE-VIT × IEEE ComSoc</span>
-    </div>
-  </div>
-  <nav class="nav" aria-label="Main">
-    <a class="brand" href="#top" data-jump="0"><span class="brand-mark" aria-hidden="true">&gt;_</span><span class="brand-txt"><b>SENSE HACK '26</b><small>IEEE VIT · ComSoc</small></span></a>
-    <ul class="links">
-      <li><a href="#register" data-soon="Register" data-scramble>Register</a></li>
-      <li><a href="#about" data-soon="About" data-scramble>About</a></li>
-      <li><a href="#tracks" data-soon="Tracks" data-scramble>Tracks</a></li>
-      <li><a href="#schedule" data-soon="Schedule" data-scramble>Schedule</a></li>
-      <li><a href="#gallery" data-soon="Gallery" data-scramble>Gallery</a></li>
-      <li><a href="#requisition" data-soon="Requisition" data-scramble>Requisition</a></li>
-      <li><a href="#faq" data-soon="FAQ" data-scramble>FAQ</a></li>
-    </ul>
-    <div class="actions">
-      <a class="btn btn-primary btn-sm" href="#register" data-soon="Register">Register now ↗</a>
-      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
-    </div>
-  </nav>
-</header>
-
-<div class="menu" id="menu" hidden>
-  <a href="#register" data-soon="Register">Register</a>
-  <a href="#about" data-soon="About">About</a>
-  <a href="#tracks" data-soon="Tracks">Tracks</a>
-  <a href="#schedule" data-soon="Schedule">Schedule</a>
-  <a href="#gallery" data-soon="Gallery">Gallery</a>
-  <a href="#requisition" data-soon="Requisition">Requisition</a>
-  <a href="#faq" data-soon="FAQ">FAQ</a>
-  <div class="row"><a class="btn btn-primary" href="#register" data-soon="Register">Register now ↗</a></div>
-</div>
-
+<div class="fallback" aria-hidden="true"></div><canvas id="gl" aria-hidden="true"></canvas><div class="flash" id="flash" aria-hidden="true"></div>
+<div class="boot" id="boot" role="status" aria-live="polite"><div class="boot-box"><pre class="boot-log" id="bootLog"></pre><div class="boot-bar"><i id="bootBar"></i></div><div class="boot-row"><span id="bootPct">000%</span><button class="boot-skip" id="bootSkip">Skip ▸</button></div></div></div>
+<header class="top"><div class="ticker"><div class="ticker-track"><span>Sense Hack '26 · December 9–10, 2026</span><span>Anna Auditorium · VIT Vellore</span><span>36-hour national flagship hackathon</span><span>7 tracks · Registrations open</span><span>IEEE-VIT × IEEE ComSoc</span><span aria-hidden="true">Sense Hack '26 · December 9–10, 2026</span><span aria-hidden="true">Anna Auditorium · VIT Vellore</span><span aria-hidden="true">36-hour national flagship hackathon</span><span aria-hidden="true">7 tracks · Registrations open</span><span aria-hidden="true">IEEE-VIT × IEEE ComSoc</span></div></div>
+<nav class="nav" aria-label="Main navigation"><a class="brand" href="#top"><span class="brand-mark">&gt;_</span><span class="brand-txt"><b>SENSE HACK '26</b><small>IEEE VIT · ComSoc</small></span></a><ul class="links"><li><a href="#register">Register</a></li><li><a href="#about">About</a></li><li><a href="#tracks">Tracks</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li></ul><div class="actions"><a class="btn btn-primary btn-sm" href="#register">Register now ↗</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button></div></nav></header>
+<div class="menu" id="menu" hidden><a href="#register">Register</a><a href="#about">About</a><a href="#tracks">Tracks</a><a href="#gallery">Gallery</a><a href="#faq">FAQ</a><a href="#contact">Contact</a><div class="row"><a class="btn btn-primary" href="#register">Register now ↗</a></div></div>
 <main>
-  <section class="track" id="top" aria-label="Sense Hack '26">
-    <div class="frame">
-      <h1 hidden>Sense Hack '26 · IEEE-VIT × IEEE ComSoc</h1>
+<section class="track" id="top" aria-label="Sense Hack cinematic introduction"><div class="frame"><h1 hidden>Sense Hack '26 · IEEE-VIT × IEEE ComSoc</h1>
+<div class="layer l-air on" id="lAir"><div class="air-l"><p class="k">36-hour national flagship hackathon</p><p class="when">December 9–10, 2026 <span>·</span> Anna Auditorium, VIT Vellore</p><div class="cta"><a class="btn btn-primary" href="#register">Register your team →</a><a class="btn" href="#tracks">Explore 7 tracks</a></div></div><div class="air-r"><p class="k">T-minus</p><div class="cd" aria-label="Countdown to December 9, 2026"><div><b data-cd="d">--</b><span>Days</span></div><div><b data-cd="h">--</b><span>Hours</span></div><div><b data-cd="m">--</b><span>Min</span></div><div><b data-cd="s">--</b><span>Sec</span></div></div><p class="tip">Scroll to enter the signal <b>↓</b></p></div></div>
+<div class="layer l-num" id="lNum" aria-hidden="true"><div class="rec"><p class="k">Ch 03 · The signal so far</p><h2>Thirty-six hours, <em>one stage.</em></h2><div class="nums"><div><b data-count="36">0</b><span>Hours</span></div><div><b data-count="20" data-plus>0</b><span>Colleges</span></div><div><b data-count="60" data-plus>0</b><span>Teams</span></div><div><b data-count="350" data-plus>0</b><span>Participants</span></div></div><p class="note">A glimpse of what the SenseHack community built together.</p><p class="hint">Keep scrolling to explore the archive</p></div></div>
+<div class="layer l-gal" id="lGal" aria-hidden="true"><div class="gal"><p class="k">Ch 04 · Field notes</p><h2>Last time, <em>on the bench.</em></h2>
+<div class="gal-stage">
+<figure class="gal-card" data-title="The opening" data-sub="Day 1 · Inauguration" data-note="Opening ceremony"><img src="/images/gallery/01.jpg" alt="Placeholder photo: a rocket on the launch pad at dusk" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 01</span></figure>
+<figure class="gal-card" data-title="The hall" data-sub="Anna Auditorium" data-note="Teams settling into the hall"><img src="/images/gallery/02.jpg" alt="Placeholder photo: a tiered pagoda above a lake" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 02</span></figure>
+<figure class="gal-card" data-title="The build" data-sub="Teams at work" data-note="Participants building their projects"><img src="/images/gallery/03.jpg" alt="Placeholder photo: a red motorcycle in a workshop" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 03</span></figure>
+<figure class="gal-card" data-title="The reviews" data-sub="Staged design reviews" data-note="Mentors reviewing a project"><img src="/images/gallery/04.jpg" alt="Placeholder photo: an espresso cup on a wooden table" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 04</span></figure>
+<figure class="gal-card" data-title="The demos" data-sub="Working prototypes" data-note="A hardware demonstration"><img src="/images/gallery/05.jpg" alt="Placeholder photo: a field of distant galaxies" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 05</span></figure>
+<figure class="gal-card" data-title="The winners" data-sub="Day 2 · Valedictory" data-note="Winning teams on stage"><img src="/images/gallery/06.jpg" alt="Placeholder photo: an orange dahlia" width="1200" height="900" decoding="async"><span class="gal-tag">Frame 06</span></figure>
+</div>
+<div class="gal-cap"><div><h3 id="galTitle">The opening</h3><p id="galSub">Day 1 · Inauguration</p></div><div class="gal-meta"><b id="galNo">01 / 06</b><small id="galNote">Opening ceremony</small></div></div>
+<div class="gal-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+<div class="layer l-disks" id="tracks" aria-hidden="true">
+  <div class="disk-copy">
+    <p class="k">Ch 05 &middot; The track archive</p>
+    <p class="disk-count" id="diskCount">TRACK 01 / 07</p>
+    <h2 id="diskTitle">Smart Healthcare</h2>
+    <p id="diskDescription">Diagnostics, wearables and assistive tools that get care to people earlier and farther away.</p>
+    <p class="disk-focus" id="diskFocus"></p>
+    <div class="disk-progress" id="diskProgress"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p class="disk-scroll-hint">SCROLL TO SWAP THE DISK <span>&darr;</span></p>
+  </div>
+  <div class="disk-picker" id="diskPicker" role="group" aria-label="Jump to a track disk"></div>
+</div>
+<div class="layer l-sig" id="lSig" aria-hidden="true"><div class="sig"><p class="warn">⚠ Carrier dropped</p><h2>Signal lost</h2><p id="sigLine">Re-tuning to channel 26…</p></div></div>
+<div class="layer l-beam" id="lBeam" aria-hidden="true"><div class="inner"><p class="k">Ch 07 · Back on air</p><h2>The future they imagined <em>is yours to build.</em></h2><p class="note">December 9–10, 2026 at Anna Auditorium, VIT Vellore. Teams from VIT and colleges across India.</p><div class="cta"><a class="btn btn-primary" href="#register">Register your team →</a><a class="btn" href="#faq">Read the FAQ</a></div><p class="tminus">T-minus <b id="tm2">--d --:--:--</b></p></div></div>
+<nav class="rail" id="rail" aria-label="Intro chapters"></nav><div class="strip" id="strip"><div class="chap"><div class="chap-now"><b id="chNum">01</b><span id="chName">On air</span></div><div class="prog"><i id="progBar"></i></div><div id="chNext">Next · Seven tracks ↓</div></div><div class="depth"><span>Z <b id="depth">+0.0</b></span><span>V <b id="vel">00.0</b></span></div></div>
+</div></section>
 
-      <div class="layer l-air on" id="lAir">
-        <div class="air-l">
-          <p class="k">36-hour national flagship hackathon</p>
-          <p class="when">December 9–10, 2026 <span>·</span> Anna Auditorium, VIT Vellore</p>
-          <div class="cta">
-            <a class="btn btn-primary" href="#register" data-soon="Register">Register your team →</a>
-            <a class="btn" href="#tracks" data-jump-ch="1">Explore 7 tracks</a>
-          </div>
-        </div>
-        <div class="air-r">
-          <p class="k">T-minus</p>
-          <div class="cd" aria-label="Countdown to December 9, 2026">
-            <div><b data-cd="d">--</b><span>Days</span></div>
-            <div><b data-cd="h">--</b><span>Hours</span></div>
-            <div><b data-cd="m">--</b><span>Min</span></div>
-            <div><b data-cd="s">--</b><span>Sec</span></div>
-          </div>
-          <p class="tip">Tip · the TV knobs <b>change the channel</b></p>
-        </div>
-      </div>
 
-      <div class="layer l-tracks" id="lTracks" aria-hidden="true">
-        <p class="k tr-cap" id="trCap">Seven tracks · tune in to one</p>
-        <p class="kw"><small>Track 01</small>Smart Healthcare</p>
-        <p class="kw"><small>Track 02</small>Smart Cities</p>
-        <p class="kw"><small>Track 03</small>Digital Education</p>
-        <p class="kw"><small>Track 04</small>Fintech</p>
-        <p class="kw"><small>Track 05</small>Green Tech</p>
-        <p class="kw"><small>Track 06</small>Cybersecurity</p>
-        <p class="kw"><small>Track 07</small>Open Innovation</p>
-      </div>
+<section class="register-section section-wrap" id="register"><div class="section-head"><p class="eyebrow">01 / Your next 36 hours</p><h2>Get in.<br><em>Build something.</em></h2><p class="section-intro">Choose the registration route that applies to you.</p></div><div class="registration-grid"><article class="registration-card vit-card"><div class="card-topline"><span>01 / VIT VELLORE</span><span class="card-index">VIT</span></div><p class="audience-label">For VIT Vellore students only</p><h3>On home ground.</h3><p>Register for the event and submit a separate hardware requisition if your team needs components.</p><div class="registration-actions"><a class="btn btn-primary form-link" data-form="vitEvent" href="#">Event registration ↗</a><a class="btn form-link" data-form="vitHardware" href="#">Hardware registration ↗</a></div></article><article class="registration-card external-card"><div class="card-topline"><span>02 / OPEN CATEGORY</span><span class="card-index">OPEN</span></div><p class="audience-label">For students outside VIT Vellore</p><h3>Come build with us.</h3><p>Start with the VIT Events portal, then complete both the event and hardware forms.</p><div class="registration-actions"><a class="btn" href="https://events.vit.ac.in/" target="_blank" rel="noopener">VIT Events website ↗</a><a class="btn btn-primary form-link" data-form="externalEvent" href="#">Event registration ↗</a><a class="btn form-link" data-form="externalHardware" href="#">Hardware registration ↗</a></div></article></div></section>
 
-      <div class="layer l-num" id="lNum" aria-hidden="true">
-        <div class="rec">
-          <p class="k">Ch 03 · By the numbers</p>
-          <h2>Thirty-six hours, <em>one stage.</em></h2>
-          <div class="nums">
-            <div><b data-count="36">0</b><span>Hours non-stop</span></div>
-            <div><b data-count="21" data-plus>0</b><span>Institutions</span></div>
-            <div><b data-count="7">0</b><span>Tracks</span></div>
-            <div><b data-count="4">0</b><span>Review phases</span></div>
-          </div>
-          <p class="note">From component requisition to the final pitch in Anna Auditorium, with hands-on hardware demos throughout.</p>
-          <p class="hint">Drag the disk to spin it · click to open</p>
-        </div>
-      </div>
+<section class="about-section section-wrap" id="about"><div class="about-copy"><p class="eyebrow">02 / The mission</p><h2>Make ideas<br><em>matter.</em></h2></div><div class="about-body"><p class="about-lead">SenseHack '26 is a 36-hour national flagship hackathon by IEEE-VIT × IEEE ComSoc.</p><p>Bring a problem worth solving, find your people, and turn a bold idea into something real. From intelligent systems to human-centred design, the next breakthrough starts with a team willing to build.</p><div class="about-meta"><span>09—10 DEC 2026</span><span>ANNA AUDITORIUM · VIT VELLORE</span><span>36 HOURS · 07 TRACKS</span></div></div></section>
 
-      <div class="layer l-sig" id="lSig" aria-hidden="true">
-        <div class="sig">
-          <p class="warn">⚠ Carrier dropped</p>
-          <h2>Signal lost</h2>
-          <p id="sigLine">Re-tuning to channel 26…</p>
-        </div>
-      </div>
+<section class="ethical-section section-wrap" id="ethical"><div class="ethical-panel"><p class="eyebrow">03 / Build responsibly</p><h2>Innovation with<br><em>intention.</em></h2><p>Build for people, respect privacy, make technology accessible, and think through the real-world impact of what you create. Great engineering considers not only what can be built, but who it serves.</p></div></section>
 
-      <div class="layer l-beam" id="lBeam" aria-hidden="true">
-        <div class="inner">
-          <p class="k">Ch 05 · Back on air</p>
-          <h2>The future they imagined <em>is yours to build.</em></h2>
-          <p class="note">December 9–10, 2026 at Anna Auditorium, VIT Vellore. Teams from VIT and colleges across India.</p>
-          <div class="cta" style="justify-content:center">
-            <a class="btn btn-primary" href="#register" data-soon="Register" tabindex="-1">Register your team →</a>
-            <a class="btn" href="#faq" data-soon="FAQ" tabindex="-1">Read the FAQ</a>
-          </div>
-          <p class="tminus">T-minus <b id="tm2">--d --:--:--</b></p>
-        </div>
-      </div>
+<section class="partners-section" id="partners"><div class="section-wrap partner-head"><p class="eyebrow">04 / The people behind the signal</p><h2>Our partners</h2></div><div class="partner-marquee" aria-label="Our partners"><div class="partner-track"><span>IEEE MADRAS</span><span>IEEE COMSOC</span><span class="ieee-mark">IEEE</span><span>VIT STUDENT WELFARE</span><span>IEEE MADRAS SECTION</span><span>SENSE SCHOOL</span><span aria-hidden="true">IEEE MADRAS</span><span aria-hidden="true">IEEE COMSOC</span><span aria-hidden="true" class="ieee-mark">IEEE</span><span aria-hidden="true">VIT STUDENT WELFARE</span><span aria-hidden="true">IEEE MADRAS SECTION</span><span aria-hidden="true">SENSE SCHOOL</span></div></div><p class="partner-note">Partner logo artwork can replace these typographic marks once the official transparent logo files are supplied.</p></section>
 
-      <nav class="rail" id="rail" aria-label="Chapters"></nav>
+<section class="faq-section section-wrap" id="faq"><div class="section-head"><p class="eyebrow">05 / Need a signal boost?</p><h2>Questions?<br><em>We've got you.</em></h2><p class="section-intro">Browse the quick answers or send the team a question.</p></div><div class="faq-layout"><div class="faq-list"><details open><summary>When and where is SenseHack '26?</summary><p>December 9–10, 2026 at Anna Auditorium, VIT Vellore. The event runs for 36 hours.</p></details><details><summary>Who can participate?</summary><p>Students from VIT Vellore and other colleges can participate. Follow the registration route for your category.</p></details><details><summary>How many tracks are there?</summary><p>There are seven tracks: Smart Healthcare, Smart Cities, Digital Education, Fintech, Green Tech, Cybersecurity and Open Innovation.</p></details><details><summary>Can I request hardware?</summary><p>Yes. Use the separate hardware registration form for your category. Submit your requirements clearly and accurately.</p></details><details><summary>What should I bring?</summary><p>Bring your student identification, laptop, chargers and any personal essentials required for a 36-hour build event. Official instructions will be shared with registered teams.</p></details><details><summary>Where can I ask something not listed here?</summary><p>Use the query form alongside this FAQ. The organising team can follow up by email.</p></details></div><form class="query-form" id="queryForm"><p class="eyebrow">WRITE TO THE ORGANISING TEAM</p><h3>Send a query.</h3><label for="queryEmail">Email address</label><input id="queryEmail" name="email" type="email" placeholder="you@example.com" required autocomplete="email"><label for="queryMessage">Your query</label><textarea id="queryMessage" name="message" rows="5" placeholder="Tell us what you'd like to know…" required minlength="8"></textarea><input class="hp-field" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="btn btn-primary" type="submit" id="querySubmit">Send query ↗</button><p class="form-feedback" id="formFeedback" role="status" aria-live="polite">Your message will be sent to ieee@vit.ac.in.</p></form></div></section>
 
-      <div class="strip" id="strip">
-        <div class="chap">
-          <div class="chap-now"><b id="chNum">01</b><span id="chName">On air</span></div>
-          <div class="prog"><i id="progBar"></i></div>
-          <div id="chNext">Next · Seven tracks ↓</div>
-        </div>
-        <div class="depth"><span>Z <b id="depth">+0.0</b></span><span>V <b id="vel">00.0</b></span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="next" aria-label="Next section">
-    <div class="next-card">
-      <div><div class="kk">Next section</div><h3>Register</h3></div>
-      <p>The rest of the site picks up here: registration channels, about, the seven tracks, the 4-phase schedule, gallery, requisition desk and FAQs.</p>
-      <a class="btn" href="#top" data-jump="0">Back on air ↑</a>
-    </div>
-    <div class="foot"><span>Sense Hack '26 · IEEE-VIT × IEEE ComSoc</span><span>Anna Auditorium, VIT Vellore · December 9–10, 2026</span></div>
-  </section>
+<section class="contact-section section-wrap" id="contact"><div class="contact-main"><p class="eyebrow">06 / Stay connected</p><h2>Keep the<br><em>signal alive.</em></h2><p>Questions about registrations, tracks or the event? Reach out to the organising team.</p><a class="contact-email" href="mailto:ieee@vit.ac.in">ieee@vit.ac.in ↗</a></div><div class="contact-side"><div><span>ORGANISER</span><strong>IEEE-VIT × IEEE ComSoc</strong></div><div><span>VENUE</span><strong>Anna Auditorium<br>VIT Vellore, Tamil Nadu</strong></div><div><span>EVENT DATES</span><strong>December 9–10, 2026</strong></div><a class="back-top" href="#top">↑ Back to top</a></div></section>
 </main>
-
-<div class="cur" id="cur" aria-hidden="true"><div class="cur-ring"></div><div class="cur-dot"></div><div class="cur-lbl" id="curLbl"></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="/src/main.js"></script>
-</body>
-</html>
+<footer class="site-footer"><span>© 2026 SENSE HACK · IEEE-VIT × IEEE ComSoc</span><span>BUILT TO MAKE THINGS THAT MATTER.</span></footer>
+<div class="cur" id="cur" aria-hidden="true"><div class="cur-ring"></div><div class="cur-dot"></div><div class="cur-lbl" id="curLbl"></div></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="/src/main.js"></script><script type="module" src="/src/ui/site.js"></script>
+</body></html>

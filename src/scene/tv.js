@@ -6,7 +6,6 @@ import { remain, pad } from '../ui/countdown.js';
 export const SCREEN = { x: -1.3, y: .15, z: 3.12, w: 6.4, h: 4.8 };
 const BG = new THREE.Color('#0a0807');
 const CHANNELS = 4;
-const TRACKS = ['01 HEALTHCARE', '02 SMART CITIES', '03 EDUCATION', '04 FINTECH', '05 GREEN TECH', '06 CYBERSECURITY', '07 OPEN INNOVATION'];
 
 function screenMaterial(channelTex, worldTex) {
   return new THREE.ShaderMaterial({
@@ -108,14 +107,6 @@ function drawChannel(ctx, channel) {
   } else if (channel === 2) {
     glowText('CH 03 · NOW TUNING', 150, '600 32px "IBM Plex Mono", monospace', '#ff7a33', 10);
     glowText('7 TRACKS', 290, '900 110px "Unbounded", "Arial Black", sans-serif', '#fff3e6', 26);
-    ctx.font = '500 30px "IBM Plex Mono", monospace';
-    ctx.fillStyle = '#f6dcc4';
-    ctx.shadowColor = 'rgba(255,110,40,.8)';
-    ctx.shadowBlur = 8;
-    ctx.textAlign = 'left';
-    TRACKS.forEach((t, i) => ctx.fillText(t, i < 4 ? 150 : 540, 400 + (i % 4) * 56));
-    ctx.shadowBlur = 0;
-    ctx.textAlign = 'center';
   } else {
     const bars = ['#f3eadf', '#ffb067', '#ff7a33', '#ff5a1f', '#c43d0c', '#7a260a', '#2a1208'];
     bars.forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(i * W / 7, 0, W / 7 + 1, H * .68); });

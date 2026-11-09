@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { V, sstep, textures } from '../lib/utils.js';
 import { makePlanet, makeFloppy, makeDisc, paintPlanets, LABELS } from './props.js';
+import { createDiskBox } from './diskbox.js';
 
 export const TUNNEL_LENGTH = 120;
 const R_MOUTH = 6.4, R_CORRIDOR = 1.75, FLARE = 16;
-export const T_DISK = .6;
+export const T_DISK = .78;   // the chamber where the floppy box sits
 export const WORLD_Z0 = 18;
 const BEAM_Z = -186;
 const BG = new THREE.Color('#0a0807');
@@ -223,7 +224,7 @@ export function createWorld(envTex) {
 
   const inTunnel = [
     [.07, .55, 4, 'f'], [.11, .6, 6, 'd'], [.16, .55, 5, 'f'], [.21, .6, 2, 'd'], [.26, .55, 7, 'f'], [.31, .6, 0, 'd'], [.37, .55, 6, 'f'],
-    [.43, .6, 1, 'f'], [.5, .55, 3, 'd'], [.68, .55, 2, 'f'], [.74, .6, 4, 'd'], [.8, .55, 7, 'f'], [.86, .55, 1, 'd'], [.92, .55, 5, 'f']
+    [.43, .6, 1, 'f'], [.5, .55, 3, 'd'], [.58, .55, 2, 'f'], [.64, .6, 4, 'd'], [.86, .55, 1, 'd'], [.92, .55, 5, 'f']
   ];
   inTunnel.forEach(([t, rf, ci, type], i) => {
     const c = centerAt(t), ang = i * 2.4 + .6, r = radiusAt(t) * rf;
@@ -237,9 +238,14 @@ export function createWorld(envTex) {
   const heroDisk = makeFloppy(scene, '#141110', "sense hack '26", '#ff5a1f', 'dec 9–10 · vit vellore');
   heroDisk.position.copy(diskPos);
   heroDisk.scale.setScalar(.82);
-  Object.assign(heroDisk.userData, { label: 'Drag to spin · click to open', isHero: true });
-  hoverables.push(heroDisk);
+  // The former single hero disk is intentionally hidden; the seven-disk stack
+  // now lives in the dedicated interactive track selector on the page.
+  heroDisk.visible = false;
+  Object.assign(heroDisk.userData, { label: 'Track archive', isHero: true });
   const disk = { rot: 0, vel: 0, open: 0, openT: 0, dragging: false, lastX: 0, downX: 0, downT: 0 };
+
+  // The box of seven track disks, sitting in the chamber at T_DISK.
+  const diskBox = createDiskBox(scene);
 
   const beam = new THREE.Mesh(new THREE.PlaneGeometry(13, 120), beamMaterial());
   beam.position.set(0, 0, BEAM_Z);
@@ -322,5 +328,5 @@ export function createWorld(envTex) {
     heroDisk.userData.shutter.position.x = .2 - disk.openT * .95;
   }
 
-  return { scene, camera, screenCamera, camLight, tunnel, glow, hoverables, heroDisk, diskPos, disk, update, updateDisk };
+  return { scene, camera, screenCamera, camLight, tunnel, glow, hoverables, heroDisk, diskPos, disk, diskBox, update, updateDisk };
 }

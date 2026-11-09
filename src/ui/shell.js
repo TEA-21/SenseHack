@@ -1,13 +1,17 @@
 import Lenis from 'lenis';
+import { toRaw, galleryRaw, postRaw, G, diskRaw, TRACK_VH } from '../lib/timeline.js';
 
 export const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// `at` / `go` are positions on the real scroll track (0..1). The gallery chapter
+// sits inside the hold that the timeline splices in after By the numbers.
 export const CHAPTERS = [
   { n: '01', name: 'On air', at: 0, go: 0 },
-  { n: '02', name: 'Seven tracks', at: .24, go: .27 },
-  { n: '03', name: 'By the numbers', at: .52, go: .58 },
-  { n: '04', name: 'Signal lost', at: .69, go: .72 },
-  { n: '05', name: 'Back on air', at: .81, go: .97 }
+  { n: '02', name: 'Seven tracks', at: toRaw(.24), go: toRaw(.27) },
+  { n: '03', name: 'By the numbers', at: toRaw(.52), go: toRaw(.58) },
+  { n: '04', name: 'Gallery', at: galleryRaw(G.gallery[0] + .03), go: galleryRaw(G.gallery[0] + .09) },
+  { n: '05', name: 'Track archive', at: galleryRaw(G.travel2[1] - .01), go: diskRaw(0) },
+  { n: '06', name: 'Signal lost', at: postRaw(.655), go: postRaw(.69) }
 ];
 
 const GLYPHS = '▓▒░#%&@$01<>/\\';
@@ -74,6 +78,7 @@ export function createShell() {
   }));
 
   const track = document.getElementById('top');
+  track.style.height = TRACK_VH + 'vh';
   const progressToY = (p) => track.offsetTop + (track.offsetHeight - innerHeight) * p;
 
   const rail = document.getElementById('rail');
@@ -100,5 +105,32 @@ export function createShell() {
     a.addEventListener('mouseenter', () => scramble(a, t));
   });
 
-  return { lenis, say, track, progressToY, railButtons: [...rail.querySelectorAll('button')] };
+  // Internal navigation remains smooth after the cinematic intro; no chapter
+  // choreography is attached to the normal website sections.
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      if (id === 'tracks') {
+        // The track archive is now inside the pinned intro, immediately before Signal Lost.
+        e.preventDefault(); setMenu(false); scrollToY(progressToY(CHAPTERS[4].go)); history.replaceState(null, '', '#tracks'); return;
+      }
+      if (id === 'gallery') {
+        // The gallery lives inside the pinned intro, so jump to its scroll position.
+        e.preventDefault();
+        setMenu(false);
+        scrollToY(progressToY(CHAPTERS[3].go));
+        history.replaceState(null, '', '#gallery');
+        return;
+      }
+      const target = id ? document.getElementById(id) : null;
+      if (!target) return;
+      e.preventDefault();
+      setMenu(false);
+      const y = target.getBoundingClientRect().top + window.scrollY - 82;
+      scrollToY(Math.max(0, y));
+      history.replaceState(null, '', `#${id}`);
+    });
+  });
+
+  return { lenis, say, track, scrollToY, progressToY, railButtons: [...rail.querySelectorAll('button')] };
 }
