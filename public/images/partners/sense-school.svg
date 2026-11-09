@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 90" fill="none">
+  <!-- Sense School Logo (School of Electronics Engineering - VIT) -->
+  <g transform="translate(10, 8)">
+    <!-- Circuit Chip & Sensor Node Emblem -->
+    <rect x="7" y="7" width="60" height="60" rx="12" fill="#121820" stroke="#10b981" stroke-width="2"/>
+    <!-- IC Chip pins -->
+    <path d="M18 7 L18 2 M37 7 L37 2 M56 7 L56 2" stroke="#10b981" stroke-width="2"/>
+    <path d="M18 67 L18 72 M37 67 L37 72 M56 67 L56 72" stroke="#10b981" stroke-width="2"/>
+    <!-- Circuit Wave & Core Sensor Dot -->
+    <path d="M16 37 L28 37 L33 24 L41 50 L46 37 L58 37" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="37" cy="37" r="4" fill="#ff7a33"/>
+    <!-- Typography -->
+    <text x="86" y="34" font-family="'Unbounded', sans-serif" font-weight="800" font-size="22" letter-spacing="1" fill="#ffffff">SENSE SCHOOL</text>
+    <text x="88" y="52" font-family="'IBM Plex Mono', monospace" font-weight="600" font-size="10.5" letter-spacing="1.5" fill="#34d399">ELECTRONICS ENGINEERING</text>
+    <text x="88" y="66" font-family="'IBM Plex Mono', monospace" font-weight="400" font-size="9" letter-spacing="1.5" fill="#94a3b8">VIT VELLORE · INNOVATION LABS</text>
+  </g>
+</svg>

@@ -3,7 +3,9 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 import { V, sstep, bump, monotone, fontsReady } from './lib/utils.js';
-import { P_CUT, G, Q_DISKS, DISK_N, warp as timelineAt, diskScroll, diskAmt } from './lib/timeline.js';
+import { P_CUT, G, Q_DISKS, DISK_N, warp as timelineAt, diskScroll, diskRaw } from './lib/timeline.js';
+import { sound, sfx } from './ui/sound.js';
+import { createDirector } from './ui/director.js';
 import { createShell, REDUCE } from './ui/shell.js';
 import { startCountdown } from './ui/countdown.js';
 import { startBoot } from './ui/boot.js';
@@ -18,6 +20,14 @@ import { redrawLabels } from './scene/props.js';
 const shell = createShell();
 startCountdown();
 const boot = startBoot();
+sound.armOnFirstGesture();
+const soundBtn = document.getElementById('soundBtn');
+if (soundBtn) {
+  soundBtn.addEventListener('click', (e) => { e.stopPropagation(); if (!sound.on && sound.enabled) sound.start(); else sound.toggle(); });
+  sound.onChange((on) => { soundBtn.textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', String(on)); });
+}
+const director = createDirector(shell);
+addEventListener('boot:done', () => director.start(900));
 
 const canvas = document.getElementById('gl');
 let renderer = null;
@@ -46,8 +56,6 @@ function run(renderer) {
     tv.refreshText();
   });
 
-  // Camera depth along the tunnel for each q. The camera never stops: it drifts on through the
-  // gaps between chapters and ends up `boxDist` in front of the floppy box.
   let depthAt = () => WORLD_Z0, boxDist = 6;
   const boxTarget = world.diskPos.clone().add(V(0, BOX_FIT.midY, 0));
   const boxAim = (q) => sstep(.600, .628, q) * (1 - sstep(.655, .685, q));
@@ -72,11 +80,9 @@ function run(renderer) {
     tv.camera.fov = portrait ? 52 : 40;
     tv.camera.updateProjectionMatrix();
 
-    // How far back the camera must sit so the whole box AND a fully raised disk fit in the
-    // part of the screen that is not covered by the text (right ~half; below the nav bar).
     const tf = Math.tan(THREE.MathUtils.degToRad(baseFov / 2));
-    const byH = BOX_FIT.h / (2 * tf * (portrait ? .42 : .68));
-    const byW = BOX_FIT.w / (2 * tf * (W / H) * (portrait ? .92 : .52));
+    const byH = BOX_FIT.h / (2 * tf * (portrait ? .4 : .5));
+    const byW = BOX_FIT.w / (2 * tf * (W / H) * (portrait ? .9 : .5));
     boxDist = Math.min(14, Math.max(byH, byW));
     buildDepth();
   }
@@ -109,6 +115,7 @@ function run(renderer) {
     }
     ray.setFromCamera(mouse.ndc, world.camera);
     const visible = world.hoverables.filter(o => o.visible);
+    if (world.diskBox.group.visible) visible.push(...world.diskBox.hoverables);
     const hit = ray.intersectObjects(visible, true);
     return hit.length ? rootOf(hit[0].object, visible) : null;
   }
@@ -118,6 +125,7 @@ function run(renderer) {
     mouse.ty = e.clientY / innerHeight * 2 - 1;
     mouse.ndc.set(mouse.tx, -mouse.ty);
     mouse.moved = true;
+    world.diskBox.drag(e.clientX);
     const d = world.disk;
     if (d.dragging) {
       const dx = e.clientX - d.lastX;
@@ -132,11 +140,24 @@ function run(renderer) {
     const hit = pick();
     if (!hit) return;
     const u = hit.userData;
+    if (u.trackIndex !== undefined) {
+      if (world.diskBox.isOut(u.trackIndex)) {
+        world.diskBox.grab(e.clientX);
+        cursor.grab(true);
+      } else if (world.diskBox.pick(u.trackIndex)) {
+        director.manual();
+        shell.lenis ? shell.lenis.scrollTo(shell.progressToY(diskRaw(u.trackIndex)), { duration: 1.1 }) : shell.scrollToY(shell.progressToY(diskRaw(u.trackIndex)));
+      }
+      return;
+    }
     if (u.action === 'channel') {
+      sfx.static(.32);
+      sfx.click();
       u.target += .8 * u.dir;
       tv.state.power = 1;
       tv.setChannel(u.dir);
     } else if (u.action === 'power') {
+      sfx.click();
       tv.state.power = tv.state.power > .5 ? 0 : 1;
       shell.say(tv.state.power ? 'Tube warming up.' : 'Off. Scroll down to switch it back on.');
     } else if (u.action === 'screen') {
@@ -151,6 +172,8 @@ function run(renderer) {
   });
 
   addEventListener('pointerup', (e) => {
+    world.diskBox.release();
+    cursor.grab(false);
     const d = world.disk;
     if (!d.dragging) return;
     d.dragging = false;
@@ -169,7 +192,7 @@ function run(renderer) {
   const clock = new THREE.Clock();
   const tmp = new THREE.Vector3();
   const look = new THREE.Vector3();
-  let time = 0, frameN = 0, prevZ = null, warp = 0, first = true;
+  let time = 0, frameN = 0, prevZ = null, warp = 0, first = true, lastQ = 0, wasOn = 0;
 
   function frame() {
     const dt = Math.min(clock.getDelta(), .05);
@@ -181,8 +204,6 @@ function run(renderer) {
     document.documentElement.classList.toggle('intro-finished', rect.bottom < innerHeight * .2);
     const max = rect.height - innerHeight;
     const pr = max > 0 ? Math.min(1, Math.max(0, -rect.top / max)) : 0;
-    // pr = real scroll position; p = position on the original intro timeline;
-    // g = progress through the gallery hold that sits after "By the numbers".
     const { p, g } = timelineAt(pr);
     const q = Math.max(0, (p - P_CUT) / (1 - P_CUT));
     const ease = 1 - Math.exp(-dt * 3);
@@ -195,7 +216,14 @@ function run(renderer) {
       hovered = null;
       cursor.cold();
       tv.state.burst = Math.max(tv.state.burst, .3);
+      if (mode === 'world') sfx.whoosh();
+      sfx.static(.45, .2);
     }
+    const scene = document.documentElement.classList.contains('intro-finished') ? 'site'
+      : mode === 'room' ? 'room' : (q > .632 && q < .76) ? 'glitch' : 'world';
+    sound.setScene(scene);
+    if (q > .64 && lastQ <= .64) sfx.glitch(1.6);
+    lastQ = q;
 
     world.update({ time, dt, q, motion });
     tv.state.burst = Math.max(0, tv.state.burst - dt);
@@ -216,7 +244,9 @@ function run(renderer) {
       const s = tv.state;
       if (r > .05) s.power = 1;
       const want = booted ? s.power : 0;
-      s.powerT += (want - s.powerT) * (1 - Math.exp(-dt * (want ? 2.4 : 6)));
+      s.powerT += (want - s.powerT) * (1 - Math.exp(-dt * (want ? 5 : 6)));
+      if (want && !wasOn) sfx.powerOn();
+      wasOn = want;
       const u = tv.screenMat.uniforms;
       u.uPower.value = s.powerT;
       u.uMix.value = 1 - sstep(.18, .62, r);
@@ -235,7 +265,7 @@ function run(renderer) {
       world.screenCamera.position.set(mouse.x * .5, -mouse.y * .3, WORLD_Z0);
       world.screenCamera.lookAt(0, 0, WORLD_Z0 - 10);
       world.camLight.position.copy(world.screenCamera.position);
-      world.diskBox.group.visible = false;   // the box only exists once the camera reaches it
+      world.diskBox.group.visible = false;
       if (u.uMix.value < .999 || frameN % 6 === 0) {
         world.glow.visible = true;
         renderer.setRenderTarget(tv.worldTarget);
@@ -258,7 +288,6 @@ function run(renderer) {
 
       const pos = pathPoint(z);
       const aim = boxAim(q);
-      // Frame the box: slightly above it, looking down a touch.
       pos.x += (boxTarget.x + .12 - pos.x) * aim;
       pos.y += (boxTarget.y + .85 - pos.y) * aim;
       const inside = sstep(2, -8, z), outside = sstep(-121, -132, z);
@@ -272,16 +301,12 @@ function run(renderer) {
       cam.rotateZ(-mouse.x * .04 - inside * (1 - outside) * (ahead.x - pos.x) * .9 + warp * Math.sin(time * 1.3) * .03);
       world.camLight.position.copy(cam.position);
 
-      // Camera pan (scene slides sideways so the text / photos / box get their own side):
-      //   numbers : tunnel to the right (text on the left), then back to centre while we drift on
-      //   gallery : tunnel swings left (photos on the right) and back again
-      //   box     : tunnel to the right again (copy on the left, box on the right)
       const [, n1] = G.numOut, [t1a, t1b] = G.travel1, [ga, gb] = G.gallery, [, t2b] = G.travel2;
       const shiftNum = sstep(.42, .47, q) * (1 - sstep(0, n1 + .045, g));
       const shiftGal = sstep(t1b - .05, t1b + .02, g) * (1 - sstep(gb - .03, gb + .03, g));
       const shiftBox = sstep(gb + .045, t2b, g) * (1 - sstep(.645, .675, q))
-        * (1 - sstep(G.disks[1] - .04, G.disks[1], g));
-      const shiftUp = shiftNum + shiftGal;   // portrait: numbers + gallery panels sit at the bottom
+        * (1 - sstep(G.disks[1] - .04, G.disks[1], g)) * 0;
+      const shiftUp = shiftNum + shiftGal;
       cam.fov = baseFov + warp * 16;
       cam.setViewOffset(W, H,
         portrait ? 0 : W * (.2 * shiftGal - .2 * shiftNum - .22 * shiftBox),
@@ -299,16 +324,13 @@ function run(renderer) {
 
       world.updateDisk({ time, dt, q, mouse, motion });
 
-      // Floppy box: it arrives while we drift in, each scroll step lifts one disk out, and it
-      // is gone again by the time SIGNAL LOST breaks the picture up.
       const ds = diskScroll(g);
-      const amts = Array.from({ length: DISK_N }, (_, i) => diskAmt(i, ds));
+      const wantDisk = ds < -.02 || ds >= DISK_N - .05 ? -1 : Math.min(DISK_N - 1, Math.max(0, Math.floor(ds)));
       const boxIn = sstep(G.travel2[0] + .02, G.travel2[1] - .005, g)
         * (1 - sstep(.655, .675, q))
         * (1 - sstep(G.disks[1] - .04, G.disks[1], g));
-      world.diskBox.update({ time, amts, boxIn, mouse, motion, base: world.diskPos });
+      world.diskBox.update({ dt, time, want: wantDisk, boxIn, mouse, motion, camera: cam, base: world.diskPos });
 
-      // Signal lost -> static site: the picture tears into streaks and blows out to cream.
       post.retro.uSmear.value = sstep(.765, .955, q);
     }
 
@@ -316,6 +338,8 @@ function run(renderer) {
       const h = pick();
       if (h !== hovered) {
         hovered = h;
+        world.diskBox.hover(h && h.userData.trackIndex !== undefined ? h.userData.trackIndex : -1);
+        if (h && h.userData.trackIndex !== undefined && !world.diskBox.isOut(h.userData.trackIndex)) sfx.tick();
         if (h) cursor.hot(h.userData.label);
         else cursor.cold();
       }
@@ -324,8 +348,10 @@ function run(renderer) {
 
     layers({ p, pr, q, g, inWorld: mode === 'world', glitch: post.retro.uGlitch.value, z, speed });
 
-    post.retro.uTime.value = time;
-    post.render();
+    if (rect.bottom > -50) {
+      post.retro.uTime.value = time;
+      post.render();
+    }
     if (first) {
       first = false;
       document.documentElement.classList.add('gl-ready');

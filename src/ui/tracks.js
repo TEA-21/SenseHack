@@ -2,11 +2,6 @@ import { sstep } from '../lib/utils.js';
 import { REDUCE, scramble } from './shell.js';
 import { TRACKS } from '../data/tracks.js';
 
-// Tracks: a floppy disk container holds one disk per track. Scrolling plays
-// them one at a time:  slide out of the container -> show the track ->
-// slide back in -> next disk.  Everything is scrubbed by scroll, so it runs
-// backwards too, and the dots / slot buttons jump straight to a track.
-
 const $ = (id) => document.getElementById(id);
 const pad = (n) => String(n).padStart(2, '0');
 const clamp01 = (x) => Math.min(1, Math.max(0, x));
@@ -14,21 +9,19 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 const N = TRACKS.length;
-const SEG_VH = 100;            // scroll distance per track, in viewport heights
-const LEAD = .05, TAIL = .05;  // idle scroll before the first and after the last disk
+const SEG_VH = 100;
+const LEAD = .05, TAIL = .05;
 const SEG = (1 - LEAD - TAIL) / N;
-export const TRACKS_VH = N * SEG_VH / (1 - LEAD - TAIL) + 100;   // + the pinned 100vh frame
+export const TRACKS_VH = N * SEG_VH / (1 - LEAD - TAIL) + 100;
 
-// Phases inside one track's segment (0..1)
-const OUT_END = .30;     // slide out finishes
-const BACK_START = .70;  // slide back starts
+const OUT_END = .30;
+const BACK_START = .70;
 
-// Geometry, in disk widths (1 = one floppy wide). Matches the CSS in styles.css.
 const DISK_H = 3.7 / 3.5;
-const PANEL = .56;                  // height of the container's front panel
-const OUT_BOTTOM = PANEL + .05;     // a disk that is out floats just above the panel
+const PANEL = .56;
+const OUT_BOTTOM = PANEL + .05;
 const parked = (i) => {
-  const top = PANEL + .10 + i * .03;               // how far the disk's top sits above the rig floor
+  const top = PANEL + .10 + i * .03;
   return { x: (i - (N - 1) / 2) * .045, y: DISK_H - top, s: 1 - i * .016 };
 };
 
@@ -57,7 +50,6 @@ export function createTracks(shell) {
   const info = $('trInfo'), hint = $('trHint'), count = $('trCount');
   sec.style.height = TRACKS_VH + 'vh';
 
-  // --- build the disks, the slot buttons and the progress segments
   const disks = TRACKS.map((t, i) => {
     const el = document.createElement('div');
     el.className = 'fd';
@@ -91,7 +83,6 @@ export function createTracks(shell) {
     return b;
   });
 
-  // --- scrolling
   const topOf = () => sec.getBoundingClientRect().top + scrollY;
   const scrollRange = () => sec.offsetHeight - innerHeight;
   function goTo(i) {
@@ -100,7 +91,6 @@ export function createTracks(shell) {
   }
   shell.onJumpTracks(() => shell.scrollToY(topOf()));
 
-  // --- copy
   let shown = -1;
   let scrambledFor = -1;
   function showCopy(i) {
@@ -117,7 +107,6 @@ export function createTracks(shell) {
   }
   showCopy(0);
 
-  // --- pointer parallax for the disk that is out
   const mouse = { x: 0, tx: 0 };
   addEventListener('pointermove', (e) => { mouse.tx = e.clientX / innerWidth * 2 - 1; }, { passive: true });
 
@@ -128,7 +117,7 @@ export function createTracks(shell) {
     const dt = Math.min(.05, (now - last) / 1000);
     last = now;
     const rect = sec.getBoundingClientRect();
-    if (rect.bottom < -200 || rect.top > innerHeight + 200) return;   // off screen
+    if (rect.bottom < -200 || rect.top > innerHeight + 200) return;
     if (!REDUCE) time += dt;
     mouse.x += (mouse.tx - mouse.x) * (1 - Math.exp(-dt * 4));
 
@@ -138,7 +127,6 @@ export function createTracks(shell) {
     const active = p <= LEAD || p >= 1 - TAIL ? -1 : Math.min(N - 1, Math.floor(s));
     const u = active < 0 ? 0 : s - active;
 
-    // how far the active disk is out of the container (0 = parked, 1 = fully out)
     const a = active < 0 ? 0 : u < OUT_END ? u / OUT_END : u < BACK_START ? 1 : 1 - (u - BACK_START) / (1 - BACK_START);
 
     if (active >= 0 && active !== shown) showCopy(active);
@@ -169,7 +157,6 @@ export function createTracks(shell) {
       d.tilt.style.transform = hold > .001 ? `rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)` : '';
     });
 
-    // info panel: fades in once the disk is out, leaves before it slides back
     const ia = active < 0 ? 0 : sstep(.24, .40, u) * (1 - sstep(.62, .74, u));
     info.style.opacity = ia.toFixed(3);
     info.style.transform = `translateY(${((1 - ia) * 22).toFixed(1)}px)`;

@@ -1,7 +1,3 @@
-// Gallery slides for "Last Sense Hack".
-// Placeholder photos come from picsum.photos (random, seeded so they stay stable).
-// To use real photos: drop files in /public/gallery and replace each `src`,
-// e.g. src: '/gallery/opening.jpg'. Wide photos (3:2 or 16:10) work best.
 const ph = (seed) => `https://picsum.photos/seed/${seed}/1600/1000`;
 
 export const SLIDES = [

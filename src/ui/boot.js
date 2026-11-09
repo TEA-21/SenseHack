@@ -15,7 +15,7 @@ export function startBoot() {
   const log = document.getElementById('bootLog');
   const bar = document.getElementById('bootBar');
   const pct = document.getElementById('bootPct');
-  const minTime = REDUCE ? 0 : 1700;
+  const minTime = REDUCE ? 0 : 650;
   const t0 = performance.now();
   let done = false;
   let sceneReady = false;
@@ -35,7 +35,7 @@ export function startBoot() {
     bar.style.width = (target * 100).toFixed(1) + '%';
     pct.textContent = String(Math.round(target * 100)).padStart(3, '0') + '%';
     log.textContent = LINES.slice(0, Math.max(1, Math.ceil(target * LINES.length))).join('\n');
-    if (target >= 1) setTimeout(finish, 250);
+    if (target >= 1) setTimeout(finish, 60);
     else requestAnimationFrame(tick);
   })();
 
@@ -43,7 +43,7 @@ export function startBoot() {
   addEventListener('keydown', (e) => {
     if (!done && (e.key === 'Escape' || e.key === 'Enter')) finish();
   });
-  setTimeout(() => { sceneReady = true; }, 6000);
+  setTimeout(() => { sceneReady = true; }, 3500);
 
   return {
     ready() { sceneReady = true; },

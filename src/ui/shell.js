@@ -3,8 +3,6 @@ import { toRaw, galleryRaw, postRaw, G, diskRaw, TRACK_VH } from '../lib/timelin
 
 export const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// `at` / `go` are positions on the real scroll track (0..1). The gallery chapter
-// sits inside the hold that the timeline splices in after By the numbers.
 export const CHAPTERS = [
   { n: '01', name: 'On air', at: 0, go: 0 },
   { n: '02', name: 'Seven tracks', at: toRaw(.24), go: toRaw(.27) },
@@ -48,7 +46,7 @@ export function createShell() {
   let lenis = null;
   if (!REDUCE) {
     try {
-      lenis = new Lenis({ lerp: .085, smoothWheel: true, wheelMultiplier: .9 });
+      lenis = new Lenis({ lerp: 0.1, smoothWheel: true, wheelMultiplier: 1.0 });
       const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
       requestAnimationFrame(raf);
     } catch (e) {
@@ -56,7 +54,8 @@ export function createShell() {
     }
   }
   const scrollToY = (y) => {
-    if (lenis) lenis.scrollTo(y, { duration: 2.4 });
+    window.dispatchEvent(new Event('nav:manual'));
+    if (lenis) lenis.scrollTo(y, { duration: 0.9 });
     else window.scrollTo({ top: y, behavior: REDUCE ? 'auto' : 'smooth' });
   };
 
@@ -105,17 +104,13 @@ export function createShell() {
     a.addEventListener('mouseenter', () => scramble(a, t));
   });
 
-  // Internal navigation remains smooth after the cinematic intro; no chapter
-  // choreography is attached to the normal website sections.
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href').slice(1);
       if (id === 'tracks') {
-        // The track archive is now inside the pinned intro, immediately before Signal Lost.
         e.preventDefault(); setMenu(false); scrollToY(progressToY(CHAPTERS[4].go)); history.replaceState(null, '', '#tracks'); return;
       }
       if (id === 'gallery') {
-        // The gallery lives inside the pinned intro, so jump to its scroll position.
         e.preventDefault();
         setMenu(false);
         scrollToY(progressToY(CHAPTERS[3].go));
@@ -126,7 +121,7 @@ export function createShell() {
       if (!target) return;
       e.preventDefault();
       setMenu(false);
-      const y = target.getBoundingClientRect().top + window.scrollY;  // each page pads itself below the fixed bar
+      const y = target.getBoundingClientRect().top + window.scrollY;
       scrollToY(Math.max(0, y));
       history.replaceState(null, '', `#${id}`);
     });

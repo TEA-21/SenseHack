@@ -4,17 +4,17 @@ import { makeFloppy, registerRedraw } from './props.js';
 import { TRACKS } from '../data.js';
 
 const N = TRACKS.length;
-const GAP = .98;                 // slot pitch
-const K0 = .24;                  // floppy scale while stored
+const GAP = .98;
+const K0 = .24;
 const INNER_W = N * GAP;
-const W = INNER_W + .26;         // rack width
-const H = 1.5;                   // rack height
-const FRONT_TOP = .25;           // top edge of the front panel (local y)
-const Y_REST = .256;             // floppy centre while stored (top ~.45 above the panel)
-const Y_CLEAR = 1.3;             // floppy centre once it has cleared the slot
+const W = INNER_W + .26;
+const H = 1.5;
+const FRONT_TOP = .25;
+const Y_REST = .256;
+const Y_CLEAR = 1.3;
 const Z_SLOT = -.12;
-const OUT_SPEED = .74;           // 1 / seconds to pull a disk out and present it
-const BACK_SPEED = .98;          // 1 / seconds to slide it home
+const OUT_SPEED = .74;
+const BACK_SPEED = .98;
 
 export const RACK = { W, H, anchorY: 1.55 };
 
@@ -69,11 +69,11 @@ export function createRack(scene) {
     return m;
   };
 
-  box(W, H, .06, 0, 0, -.37, inner);                       // back wall
-  box(W, .08, .52, 0, -H / 2 + .04, -.12);                  // floor
-  box(.13, H + .06, .54, -W / 2 + .065, 0, -.1);            // end caps
+  box(W, H, .06, 0, 0, -.37, inner);
+  box(W, .08, .52, 0, -H / 2 + .04, -.12);
+  box(.13, H + .06, .54, -W / 2 + .065, 0, -.1);
   box(.13, H + .06, .54, W / 2 - .065, 0, -.1);
-  for (let i = 1; i < N; i++) box(.03, H - .06, .44, (i - N / 2) * GAP, 0, -.14, inner); // slot dividers
+  for (let i = 1; i < N; i++) box(.03, H - .06, .44, (i - N / 2) * GAP, 0, -.14, inner);
 
   const panelTex = canvasTex(2048, Math.round(2048 / W), (c, w, h) => drawPanel(c, w, h));
   registerRedraw(() => { drawPanel(panelTex.image.getContext('2d'), panelTex.image.width, panelTex.image.height); panelTex.needsUpdate = true; });
@@ -83,7 +83,6 @@ export function createRack(scene) {
   face.position.set(0, FRONT_TOP - panelH / 2, .0965);
   rack.add(face);
 
-  // one amber LED per slot, lit while its disk is out
   const leds = [];
   for (let i = 0; i < N; i++) {
     const led = new THREE.Mesh(new THREE.PlaneGeometry(.2, .035), new THREE.MeshBasicMaterial({ color: '#ffa24a', transparent: true, opacity: .12 }));
@@ -121,8 +120,8 @@ export function createRack(scene) {
       else u.t = Math.max(0, u.t - dt * BACK_SPEED);
       if (u.t > leadT) { leadT = u.t; lead = i; }
 
-      const a = sstep(0, .42, u.t);        // slide up out of the slot
-      const b = sstep(.4, 1, u.t);         // swing out front and present
+      const a = sstep(0, .42, u.t);
+      const b = sstep(.4, 1, u.t);
       const x = slotX(i) + (xd - slotX(i)) * b;
       const y = Y_REST + (Y_CLEAR - Y_REST) * a + (yd - Y_CLEAR) * b + Math.sin(time * 1.1 + i) * .04 * b * motion;
       const z = Z_SLOT + (zd - Z_SLOT) * b;

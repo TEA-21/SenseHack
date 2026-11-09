@@ -27,8 +27,6 @@ const RetroShader = {
         if (h(vec2(band, floor(uTime * 22.0))) < uGlitch * 0.55) uv.x += (h(vec2(band, 3.1)) - 0.5) * 0.22 * uGlitch;
         uv.y += (h(vec2(floor(uTime * 9.0), 1.0)) - 0.5) * 0.02 * uGlitch;
       }
-      // Signal lost -> static site: the picture tears sideways into horizontal streaks,
-      // then resolves instead of holding on a blank cream frame.
       float rowK = 0.0, rowR = 0.0;
       if (uSmear > 0.001){
         float row = floor(vUv.y * 64.0);
@@ -48,9 +46,7 @@ const RetroShader = {
       c *= 1.0 - (uGlitch * 0.35 + uCRT * 0.22) * step(0.5, fract(vUv.y * uRes.y / 4.0));
       c *= 1.0 - r2 * (0.6 + uCRT * 0.8);
       if (uSmear > 0.001){
-        // Streaks flare during the drop, then clear to reveal the next section.
         c = mix(c, vec3(1.0, 0.93, 0.8) * (1.0 + rowK), rowK * 0.85);
-        // black dropout blocks at the edges of some rows, like the lost carrier
         float blk = step(0.78, rowR) * (1.0 - smoothstep(0.72, 0.9, uSmear));
         c *= 1.0 - blk * rowK * step(vUv.x, 0.06 + 0.2 * rowR) ;
         c *= 1.0 - blk * rowK * step(1.0 - 0.04 - 0.06 * rowR, vUv.x);

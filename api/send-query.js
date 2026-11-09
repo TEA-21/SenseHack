@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed.' });
   const { email, message, website } = req.body || {};
-  if (website) return res.status(200).json({ ok: true }); // honeypot
+  if (website) return res.status(200).json({ ok: true });
   if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof message !== 'string' || message.trim().length < 8 || message.length > 5000) {
     return res.status(400).json({ error: 'Please enter a valid email and a query of at least 8 characters.' });
   }

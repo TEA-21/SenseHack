@@ -1,7 +1,6 @@
 import { sstep, bump } from '../lib/utils.js';
 import { CHAPTERS, REDUCE, scramble } from './shell.js';
-import { TRACKS } from '../data/tracks.js';
-import { G, DISK_N, diskScroll, diskAmt, diskRaw } from '../lib/timeline.js';
+import { G, diskScroll } from '../lib/timeline.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -25,41 +24,20 @@ export function createLayers(railButtons, shell) {
   let chapter = -1;
   let sigShown = false;
 
-  // Gallery deck
   const cards = [...gal.querySelectorAll('.gal-card')];
   const ticks = [...gal.querySelectorAll('.gal-ticks i')];
   const galTitle = $('galTitle'), galSub = $('galSub'), galNote = $('galNote'), galNo = $('galNo');
   let galIdx = -1;
-  // Gallery timing, in g. The camera swings right while we drift in, the photos run, then it swings back.
   const [GA, GB] = G.gallery;
   const GAL_IN0 = GA + .005, GAL_IN1 = GA + .04, GAL_OUT0 = GB - .035, GAL_OUT1 = GB - .005;
   const FIRST = GA + .045, LAST = GB - .04;
 
-  // The box itself is 3D (scene/diskbox.js). Here: the copy beside it and the 01-07 picker.
-  const diskTicks = [...$('diskProgress').querySelectorAll('i')];
-  const diskTitle = $('diskTitle');
-  const diskDescription = $('diskDescription');
-  const diskFocus = $('diskFocus');
-  const diskCount = $('diskCount');
-  const diskCopy = document.querySelector('.disk-copy');
-  const picker = $('diskPicker');
-  const pickBtns = TRACKS.map((t, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = String(i + 1).padStart(2, '0');
-    b.setAttribute('aria-label', `Show disk ${i + 1}: ${t.name}`);
-    b.addEventListener('click', () => shell.scrollToY(shell.progressToY(diskRaw(i))));
-    picker.appendChild(b);
-    return b;
-  });
-  let diskIdx = -1;
+  const diskHint = $('diskHint');
 
   return function update({ p, pr, q, g, inWorld, glitch, z, speed }) {
     const airA = 1 - sstep(.015, .06, p);
     setLayer(air, airA, `translateY(${(sstep(.015, .06, p) * 40).toFixed(1)}px)`);
 
-    // "By the numbers" now leaves on the gallery's clock (g) rather than on q, because
-    // the world is held still while the gallery plays.
     const numOut = sstep(0, G.numOut[1], g);
     const numA = sstep(.455, .49, q) * (1 - numOut);
     setLayer(num, numA, `translateY(${((1 - sstep(.455, .5, q)) * 40 - numOut * 40).toFixed(1)}px)`);
@@ -69,21 +47,20 @@ export function createLayers(railButtons, shell) {
       if (c.el.textContent !== t) c.el.textContent = t;
     }
 
-    // Gallery: photos fly past like frames in the tunnel, one per beat of scroll.
     const galA = bump(GAL_IN0, GAL_IN1, GAL_OUT0, GAL_OUT1, g) * (inWorld ? 1 : 0);
     setLayer(gal, galA, `translateY(${((1 - sstep(GAL_IN0, GAL_IN1 + .02, g)) * 40 - sstep(GAL_OUT0, GAL_OUT1, g) * 40).toFixed(1)}px)`);
     if (galA > .01) {
       const n = cards.length;
       const raw = Math.min(1, Math.max(0, (g - FIRST) / (LAST - FIRST))) * (n - 1);
       const base = Math.floor(raw);
-      const f = REDUCE ? Math.round(raw) : base + sstep(.3, .7, raw - base);   // dwell on each photo, then flip
+      const f = REDUCE ? Math.round(raw) : base + sstep(.3, .7, raw - base);
       cards.forEach((el, i) => {
         const d = i - f;
         let o, sc, x, y, r, dim;
-        if (d < 0) {                       // already passed: flies out past the camera
+        if (d < 0) {
           const t = Math.min(1, -d);
           sc = 1 + t * .5; x = t * 16; y = -t * 9; r = t * (i % 2 ? 5 : -5); o = Math.max(0, 1 - t * 1.25); dim = 0;
-        } else {                           // still ahead: receding toward the vanishing point
+        } else {
           const t = Math.min(d, 4);
           sc = 1 - t * .07; x = -t * 7; y = -t * 4.5; r = 0; o = Math.max(0, 1 - t * .3); dim = Math.min(.8, t * .22);
         }
@@ -105,33 +82,11 @@ export function createLayers(railButtons, shell) {
       }
     }
 
-
-    // The floppy box follows the gallery and finishes right before Signal Lost. The 3D disks are
-    // driven from main.js with the same diskScroll(g); this only handles the copy beside them.
     const diskA = bump(G.travel2[1] - .02, G.travel2[1] + .015, G.disks[1] - .04, G.disks[1], g) * (inWorld ? 1 : 0);
     setLayer(disksLayer, diskA);
     if (diskA > .01) {
       const ds = diskScroll(g);
-      let best = 0, bestA = -1;
-      for (let i = 0; i < DISK_N; i++) {
-        const a = diskAmt(i, ds);
-        if (a > bestA) { bestA = a; best = i; }
-        pickBtns[i].classList.toggle('now', a > .5);
-      }
-      // text is visible while a disk is held out, and gone while one is going in / another is coming out
-      const hold = sstep(.62, .92, bestA);
-      diskCopy.style.opacity = hold.toFixed(3);
-      diskCopy.style.transform = `translateY(${((1 - hold) * 18).toFixed(1)}px)`;
-      if (best !== diskIdx && (hold < .25 || diskIdx < 0)) {
-        diskIdx = best;
-        const track = TRACKS[best];
-        scramble(diskTitle, track.name, 320);
-        diskDescription.textContent = track.desc;
-        diskFocus.textContent = track.focus;
-        diskCount.textContent = `TRACK ${String(best + 1).padStart(2, '0')} / ${String(DISK_N).padStart(2, '0')}`;
-        diskTicks.forEach((tick, i) => tick.classList.toggle('on', i <= best));
-        pickBtns.forEach((b, i) => b.classList.toggle('on', i === best));
-      }
+      diskHint.style.opacity = (sstep(.15, .45, ds) * (1 - sstep(1.6, 2.2, ds)) * .9 + .1).toFixed(3);
     }
 
     const sigA = bump(.64, .66, .715, .74, q);
@@ -145,7 +100,7 @@ export function createLayers(railButtons, shell) {
       sigShown = false;
     }
 
-    setLayer(beam, 0);   // "Back on air" is gone: signal lost now smears straight into the site
+    setLayer(beam, 0);
     flash.style.opacity = '0';
     frame.style.setProperty('--scrim', (inWorld ? 0 : airA).toFixed(3));
 

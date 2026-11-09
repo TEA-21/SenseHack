@@ -1,5 +1,3 @@
-// The seven tracks. Each one is a floppy disk in the box.
-// The text here is placeholder copy: replace it with the official track briefs.
 export const TRACKS = [
   { name: 'Smart Healthcare', label: 'smart healthcare',  tag: 'Care that reaches people sooner',
     desc: 'Diagnostics, wearables and assistive tools that get care to people earlier and farther away.',

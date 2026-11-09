@@ -5,7 +5,7 @@ import { createDiskBox } from './diskbox.js';
 
 export const TUNNEL_LENGTH = 120;
 const R_MOUTH = 6.4, R_CORRIDOR = 1.75, FLARE = 16;
-export const T_DISK = .78;   // the chamber where the floppy box sits
+export const T_DISK = .78;
 export const WORLD_Z0 = 18;
 const BEAM_Z = -186;
 const BG = new THREE.Color('#0a0807');
@@ -238,13 +238,10 @@ export function createWorld(envTex) {
   const heroDisk = makeFloppy(scene, '#141110', "sense hack '26", '#ff5a1f', 'dec 9–10 · vit vellore');
   heroDisk.position.copy(diskPos);
   heroDisk.scale.setScalar(.82);
-  // The former single hero disk is intentionally hidden; the seven-disk stack
-  // now lives in the dedicated interactive track selector on the page.
   heroDisk.visible = false;
   Object.assign(heroDisk.userData, { label: 'Track archive', isHero: true });
   const disk = { rot: 0, vel: 0, open: 0, openT: 0, dragging: false, lastX: 0, downX: 0, downT: 0 };
 
-  // The box of seven track disks, sitting in the chamber at T_DISK.
   const diskBox = createDiskBox(scene);
 
   const beam = new THREE.Mesh(new THREE.PlaneGeometry(13, 120), beamMaterial());

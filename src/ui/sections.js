@@ -7,7 +7,6 @@ const ticks = (n, on) => Array.from({ length: n }, (_, i) => `<i${i <= on ? ' cl
 const ease = (t) => 1 - Math.pow(1 - t, 3);
 
 export function createSections() {
-  /* ---------- track panel (next to the floppy that is currently out) ---------- */
   const trk = $('lTrk');
   trk.innerHTML = `
     <p class="k trk-cap">Track library · ${TRACKS.length} disks · scroll to pull each one</p>
@@ -41,7 +40,6 @@ export function createSections() {
   }
   const setTrackCaption = (a) => { tCap.style.opacity = a.toFixed(3); };
 
-  /* ---------- archive: heading + stats + gallery ---------- */
   const arc = $('lArc');
   arc.innerHTML = `
     <div class="arc-in">
