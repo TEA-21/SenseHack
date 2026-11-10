@@ -16,16 +16,16 @@ import { createWorld, pathPoint, WORLD_Z0 } from './scene/world.js';
 import { BOX_FIT } from './scene/diskbox.js';
 import { createPost } from './scene/post.js';
 import { redrawLabels } from './scene/props.js';
+import { initSite } from './ui/site.js';
 
 const shell = createShell();
 startCountdown();
+initSite();
 const boot = startBoot();
-sound.armOnFirstGesture();
 const soundBtns = [...document.querySelectorAll('.sound-btn')];
 soundBtns.forEach((btn) => btn.addEventListener('click', (e) => { e.stopPropagation(); if (!sound.on && sound.enabled) sound.start(); else sound.toggle(); }));
 sound.onChange((on) => soundBtns.forEach((btn) => { btn.textContent = on ? 'Sound on' : 'Sound off'; btn.setAttribute('aria-pressed', String(on)); }));
 const director = createDirector(shell);
-addEventListener('boot:done', () => director.start(900));
 
 const canvas = document.getElementById('gl');
 let renderer = null;
@@ -48,7 +48,7 @@ function run(renderer) {
   const cursor = createCursor();
   const layers = createLayers(shell.railButtons, shell);
 
-  const canvasFonts = ['56px "Brigold"', '900 92px "Unbounded"', '500 36px "IBM Plex Mono"', '600 25px "IBM Plex Mono"', '500 36px "Inter"'];
+  const canvasFonts = ['700 56px "Unbounded"', '900 92px "Unbounded"', '500 36px "IBM Plex Mono"', '600 25px "IBM Plex Mono"', '500 36px "Inter"'];
   const redrawAll = () => { redrawLabels(); world.diskBox.redraw(); tv.refreshText(); };
   Promise.all(canvasFonts.map((f) => (document.fonts ? document.fonts.load(f).catch(() => {}) : null))).then(redrawAll);
   if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', redrawAll);

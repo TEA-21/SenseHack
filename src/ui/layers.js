@@ -20,8 +20,7 @@ export function createLayers(railButtons, shell) {
   const air = $('lAir'), num = $('lNum'), gal = $('lGal'), disksLayer = $('tracks'), sig = $('lSig'), beam = $('lBeam');
   const counts = [...document.querySelectorAll('[data-count]')].map(el => ({ el, n: +el.dataset.count, plus: el.hasAttribute('data-plus') }));
   const frame = document.querySelector('.frame');
-  const flash = $('flash'), strip = $('strip'), depth = $('depth'), vel = $('vel');
-  const chNum = $('chNum'), chName = $('chName'), chNext = $('chNext'), progress = $('progBar'), sigLine = $('sigLine');
+  const flash = $('flash'), strip = $('strip'), sigLine = $('sigLine');
   let chapter = -1;
   let sigShown = false;
 
@@ -165,7 +164,7 @@ export function createLayers(railButtons, shell) {
     CHAPTERS.forEach((c, i) => { if (pr >= c.at) ci = i; });
     if (ci !== chapter) {
       chapter = ci;
-            railButtons.forEach((b, i) => b.classList.toggle('on', i === ci));
+      (railButtons || []).forEach((b, i) => b.classList.toggle('on', i === ci));
     }
   };
 }

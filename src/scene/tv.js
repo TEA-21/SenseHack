@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { V, canvasTex, textures } from '../lib/utils.js';
-import { CHANNELS, VOLUME_STEPS, drawChannel, loadMedia, media } from './channels.js';
+import { CHANNELS, VOLUME_STEPS, drawChannel, loadMedia, loadVideo, media } from './channels.js';
 
 export const SCREEN = { x: -1.3, y: .15, z: 3.12, w: 6.4, h: 4.8 };
 const BG = new THREE.Color('#0a0807');
@@ -244,14 +244,16 @@ export function createTV(envTex) {
     v.volume = vol / (VOLUME_STEPS - 1);
   };
   const syncVideo = () => {
-    const v = video();
-    if (!v) return;
     if (CHANNELS[channel].id === 'film' && active) {
+      loadVideo();
+      const v = video();
+      if (!v) return;
       applyVolume();
       const p = v.play();
       if (p && p.catch) p.catch(() => { v.muted = true; v.play().catch(() => {}); });
     } else {
-      v.pause();
+      const v = video();
+      if (v) v.pause();
     }
   };
 

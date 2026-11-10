@@ -9,8 +9,8 @@ const CHORDS = [
 ];
 const ARP = [0, 1, 2, 3, 2, 1, 0, 2, 1, 3, 2, 0, 1, 2, 3, 1];
 
-let enabled = true;
-try { enabled = localStorage.getItem(PREF) !== 'off'; } catch (e) { enabled = true; }
+let enabled = false;
+try { enabled = localStorage.getItem(PREF) === 'on'; } catch (e) { enabled = false; }
 
 let ctx = null, master = null, music = null, sfxBus = null, padFilter = null, arpGain = null, humGain = null, noiseBuf = null;
 let nextTime = 0, step = 0, timer = null, scene = 'room', level = 1;
@@ -238,13 +238,7 @@ export const sound = {
     scene = name;
     applyScene(false);
   },
-  armOnFirstGesture() {
-    const go = () => {
-      if (enabled) this.start();
-      ['pointerdown', 'keydown', 'touchstart'].forEach(e => removeEventListener(e, go, true));
-    };
-    ['pointerdown', 'keydown', 'touchstart'].forEach(e => addEventListener(e, go, true));
-  }
+  armOnFirstGesture() {}
 };
 
 export const sfx = {

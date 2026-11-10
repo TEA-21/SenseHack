@@ -13,7 +13,9 @@ export function createCursor() {
 
   if (fine) {
     document.documentElement.classList.add('has-cursor');
-    addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+    addEventListener('pointermove', (e) => {
+      el.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    }, { passive: true });
     // Only real controls get the "hot" ring. Static things never do.
     addEventListener('pointerover', (e) => {
       const t = e.target.closest ? e.target.closest(DOM_HOT) : null;
@@ -38,12 +40,6 @@ export function createCursor() {
     grab(on) {
       el.classList.toggle('grab', on);
     },
-    update(dt) {
-      if (!fine) return;
-      const k = 1 - Math.exp(-dt * 18);
-      x += (tx - x) * k;
-      y += (ty - y) * k;
-      el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-    }
+    update() {}
   };
 }

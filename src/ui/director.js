@@ -26,9 +26,9 @@ function buildCues() {
 export function createDirector(shell) {
   const btn = document.getElementById('playBtn');
   const cues = buildCues();
-  let auto = !REDUCE;
+  let auto = false;
   let playing = false;
-  let idx = 0, phase = 'hold', t = 0, from = 0, lastManual = 0, last = performance.now(), started = false;
+  let idx = 0, phase = 'hold', t = 0, from = 0, lastManual = 0, last = performance.now(), started = true;
 
   const rawNow = () => {
     const r = shell.track.getBoundingClientRect();
@@ -61,7 +61,11 @@ export function createDirector(shell) {
 
   function manual() {
     lastManual = performance.now();
-    if (playing) { playing = false; render(); }
+    if (playing || auto) {
+      playing = false;
+      auto = false;
+      render();
+    }
   }
 
   addEventListener('wheel', manual, { passive: true });
@@ -86,10 +90,7 @@ export function createDirector(shell) {
     const dt = Math.min(1, (now - last) / 1000);
     last = now;
     if (!started) return;
-    if (!playing) {
-      if (auto && now - lastManual > IDLE_RESUME && rawNow() < .995) resumeFrom(rawNow());
-      return;
-    }
+    if (!playing) return;
     const c = cues[idx];
     t += dt;
     if (phase === 'travel') {
