@@ -20,7 +20,7 @@ export function createLayers(railButtons, shell) {
   const air = $('lAir'), num = $('lNum'), gal = $('lGal'), disksLayer = $('tracks'), sig = $('lSig'), beam = $('lBeam');
   const counts = [...document.querySelectorAll('[data-count]')].map(el => ({ el, n: +el.dataset.count, plus: el.hasAttribute('data-plus') }));
   const frame = document.querySelector('.frame');
-  const flash = $('flash'), strip = $('strip'), sigLine = $('sigLine');
+  const flash = $('flash'), sigLine = $('sigLine');
   let chapter = -1;
   let sigShown = false;
 
@@ -159,7 +159,6 @@ export function createLayers(railButtons, shell) {
     flash.style.opacity = '0';
     frame.style.setProperty('--scrim', (inWorld ? 0 : airA).toFixed(3));
 
-    if (strip) strip.style.opacity = sstep(.05, .12, p).toFixed(3);
     let ci = 0;
     CHAPTERS.forEach((c, i) => { if (pr >= c.at) ci = i; });
     if (ci !== chapter) {

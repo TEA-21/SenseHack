@@ -5,7 +5,6 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { V, sstep, bump, monotone, fontsReady } from './lib/utils.js';
 import { P_CUT, G, Q_DISKS, DISK_N, warp as timelineAt, diskScroll, diskRaw } from './lib/timeline.js';
 import { sound, sfx } from './ui/sound.js';
-import { createDirector } from './ui/director.js';
 import { createShell, REDUCE } from './ui/shell.js';
 import { startCountdown } from './ui/countdown.js';
 import { startBoot } from './ui/boot.js';
@@ -22,10 +21,6 @@ const shell = createShell();
 startCountdown();
 initSite();
 const boot = startBoot();
-const soundBtns = [...document.querySelectorAll('.sound-btn')];
-soundBtns.forEach((btn) => btn.addEventListener('click', (e) => { e.stopPropagation(); if (!sound.on && sound.enabled) sound.start(); else sound.toggle(); }));
-sound.onChange((on) => soundBtns.forEach((btn) => { btn.textContent = on ? 'Sound on' : 'Sound off'; btn.setAttribute('aria-pressed', String(on)); }));
-const director = createDirector(shell);
 
 const canvas = document.getElementById('gl');
 let renderer = null;
@@ -152,12 +147,10 @@ function run(renderer) {
         world.diskBox.grab(e.clientX);
         cursor.grab(true);
       } else if (world.diskBox.pick(u.trackIndex)) {
-        director.manual();
         shell.lenis ? shell.lenis.scrollTo(shell.progressToY(diskRaw(u.trackIndex)), { duration: 1.1 }) : shell.scrollToY(shell.progressToY(diskRaw(u.trackIndex)));
       }
       return;
     }
-    if (u.action === 'channel' || u.action === 'volume' || u.action === 'power') director.halt();
     if (u.action === 'channel') {
       sfx.static(.32);
       sfx.click();
