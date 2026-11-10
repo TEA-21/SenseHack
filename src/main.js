@@ -5,7 +5,6 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { V, sstep, bump, monotone, fontsReady } from './lib/utils.js';
 import { P_CUT, G, Q_DISKS, DISK_N, warp as timelineAt, diskScroll, diskRaw } from './lib/timeline.js';
 import { sound, sfx } from './ui/sound.js';
-import { createDirector } from './ui/director.js';
 import { createShell, REDUCE } from './ui/shell.js';
 import { startCountdown } from './ui/countdown.js';
 import { startBoot } from './ui/boot.js';
@@ -16,16 +15,12 @@ import { createWorld, pathPoint, WORLD_Z0 } from './scene/world.js';
 import { BOX_FIT } from './scene/diskbox.js';
 import { createPost } from './scene/post.js';
 import { redrawLabels } from './scene/props.js';
+import { initSite } from './ui/site.js';
 
 const shell = createShell();
 startCountdown();
+initSite();
 const boot = startBoot();
-sound.armOnFirstGesture();
-const soundBtns = [...document.querySelectorAll('.sound-btn')];
-soundBtns.forEach((btn) => btn.addEventListener('click', (e) => { e.stopPropagation(); if (!sound.on && sound.enabled) sound.start(); else sound.toggle(); }));
-sound.onChange((on) => soundBtns.forEach((btn) => { btn.textContent = on ? 'Sound on' : 'Sound off'; btn.setAttribute('aria-pressed', String(on)); }));
-const director = createDirector(shell);
-addEventListener('boot:done', () => director.start(900));
 
 const canvas = document.getElementById('gl');
 let renderer = null;
@@ -48,7 +43,7 @@ function run(renderer) {
   const cursor = createCursor();
   const layers = createLayers(shell.railButtons, shell);
 
-  const canvasFonts = ['56px "Brigold"', '900 92px "Unbounded"', '500 36px "IBM Plex Mono"', '600 25px "IBM Plex Mono"', '500 36px "Inter"'];
+  const canvasFonts = ['700 56px "Unbounded"', '900 92px "Unbounded"', '500 36px "IBM Plex Mono"', '600 25px "IBM Plex Mono"', '500 36px "Inter"'];
   const redrawAll = () => { redrawLabels(); world.diskBox.redraw(); tv.refreshText(); };
   Promise.all(canvasFonts.map((f) => (document.fonts ? document.fonts.load(f).catch(() => {}) : null))).then(redrawAll);
   if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', redrawAll);
@@ -152,12 +147,10 @@ function run(renderer) {
         world.diskBox.grab(e.clientX);
         cursor.grab(true);
       } else if (world.diskBox.pick(u.trackIndex)) {
-        director.manual();
         shell.lenis ? shell.lenis.scrollTo(shell.progressToY(diskRaw(u.trackIndex)), { duration: 1.1 }) : shell.scrollToY(shell.progressToY(diskRaw(u.trackIndex)));
       }
       return;
     }
-    if (u.action === 'channel' || u.action === 'volume' || u.action === 'power') director.halt();
     if (u.action === 'channel') {
       sfx.static(.32);
       sfx.click();

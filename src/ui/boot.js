@@ -15,6 +15,20 @@ export function startBoot() {
   const log = document.getElementById('bootLog');
   const bar = document.getElementById('bootBar');
   const pct = document.getElementById('bootPct');
+
+  let alreadyBooted = false;
+  try { alreadyBooted = sessionStorage.getItem('sh_booted') === '1'; } catch (e) { alreadyBooted = false; }
+
+  if (alreadyBooted && boot) {
+    boot.classList.add('done');
+    boot.hidden = true;
+    queueMicrotask(() => window.dispatchEvent(new Event('boot:done')));
+    return {
+      ready: () => {},
+      isDone: () => true
+    };
+  }
+
   const minTime = REDUCE ? 0 : 650;
   const t0 = performance.now();
   let done = false;
@@ -23,8 +37,11 @@ export function startBoot() {
   const finish = () => {
     if (done) return;
     done = true;
-    boot.classList.add('done');
-    setTimeout(() => { boot.hidden = true; }, 700);
+    try { sessionStorage.setItem('sh_booted', '1'); } catch (e) {}
+    if (boot) {
+      boot.classList.add('done');
+      setTimeout(() => { boot.hidden = true; }, 700);
+    }
     window.dispatchEvent(new Event('boot:done'));
   };
 

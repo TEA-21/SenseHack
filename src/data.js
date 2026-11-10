@@ -23,8 +23,8 @@ export const ARCHIVE = {
 };
 
 export const GALLERY = [
-  { src: '/gallery/g1.jpg', title: 'The Hall', cap: "Phase 1 · Anna Auditorium", alt: 'Wide view of the Anna Auditorium filled with teams at their benches' },
-  { src: '/gallery/g2.jpg', title: 'The Build', cap: 'Teams at work', alt: 'Participants working on laptops at tables in the auditorium' },
-  { src: '/gallery/g3.jpg', title: 'The Pitches', cap: 'Problem statement round', alt: 'A team presenting their problem statement at the VIT podium' },
-  { src: '/gallery/g4.jpg', title: 'The Winners', cap: 'Valedictory', alt: 'Winning teams and organizers holding certificates on stage' }
+  { src: '/images/gallery/01.jpg', title: 'The Hall', cap: "Phase 1 · Anna Auditorium", alt: 'Wide view of the Anna Auditorium filled with teams at their benches' },
+  { src: '/images/gallery/02.jpg', title: 'The Build', cap: 'Teams at work', alt: 'Participants working on laptops at tables in the auditorium' },
+  { src: '/images/gallery/03.jpg', title: 'The Pitches', cap: 'Problem statement round', alt: 'A team presenting their problem statement at the VIT podium' },
+  { src: '/images/gallery/04.jpg', title: 'The Winners', cap: 'Valedictory', alt: 'Winning teams and organizers holding certificates on stage' }
 ];

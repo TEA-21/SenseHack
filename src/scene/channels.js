@@ -46,6 +46,10 @@ export function loadMedia() {
     img.src = src;
     media.imgs[k] = img;
   }
+}
+
+export function loadVideo() {
+  if (media.video) return media.video;
   const v = document.createElement('video');
   v.src = '/tv/aftermovie.mp4';
   v.preload = 'auto';
@@ -55,6 +59,7 @@ export function loadMedia() {
   v.setAttribute('webkit-playsinline', '');
   v.crossOrigin = 'anonymous';
   media.video = v;
+  return v;
 }
 
 const ready = (img) => img && img.complete && img.naturalWidth > 0;
