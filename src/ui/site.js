@@ -74,21 +74,19 @@ export function initSite() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, message })
         });
-        if (apiRes.ok) sent = true;
-      } catch (err) { /* try the next route */ }
-
-      // 2) FormSubmit.co, only counted when it explicitly confirms
-      if (!sent) {
-        try {
-          const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ _subject: `SenseHack '26 query from ${email}`, email, message, _replyto: email, _template: 'table' })
-          });
-          const data = await res.json().catch(() => ({}));
-          if (res.ok && (data.success === 'true' || data.success === true)) sent = true;
-        } catch (err) { /* fall through to mailto */ }
-      }
+        if (apiRes.ok) {
+          sent = true;
+        } else if (apiRes.status === 400 || apiRes.status === 429) {
+          const errData = await apiRes.json().catch(() => ({}));
+          if (feedback) {
+            feedback.className = 'form-feedback error';
+            feedback.textContent = errData.error || 'Please check your query.';
+          }
+          button.disabled = false;
+          button.innerHTML = originalText;
+          return;
+        }
+      } catch (err) { /* fall through to mailto */ }
 
       if (sent) {
         if (feedback) {
@@ -97,10 +95,10 @@ export function initSite() {
         }
         form.reset();
       } else {
-        // 3) Always works: open the visitor's mail app with the query pre-filled
+        // 2) Always works: open the visitor's mail app with the query pre-filled
         if (feedback) {
           feedback.className = 'form-feedback success';
-          feedback.innerHTML = `Opening your email app to send this to <strong>${to}</strong>…`;
+          feedback.textContent = `Opening your email app to send this to ${to}…`;
         }
         window.location.href = `mailto:${to}?subject=${encodeURIComponent("SenseHack '26 query from " + email)}&body=${encodeURIComponent(message + '\n\nReply to: ' + email)}`;
       }
