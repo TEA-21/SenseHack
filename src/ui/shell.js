@@ -69,6 +69,9 @@ export function createShell() {
     if (lenis) open ? lenis.stop() : lenis.start();
   };
   menuBtn.addEventListener('click', () => setMenu(menu.hidden));
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu && !menu.hidden) setMenu(false);
+  });
 
   document.querySelectorAll('[data-soon]').forEach(a => a.addEventListener('click', (e) => {
     e.preventDefault();
