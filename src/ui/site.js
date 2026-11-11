@@ -3,6 +3,7 @@ import { startGlyph } from './glyph.js';
 
 export function initSite() {
   startGlyph();
+  initScheduleTabs();
 
   const $ = (id) => document.getElementById(id);
 
@@ -120,4 +121,53 @@ export function initSite() {
     }, { rootMargin: '-45% 0px -50% 0px' });
     watched.forEach(el => io.observe(el));
   }
+}
+
+function initScheduleTabs() {
+  const tabs = Array.from(document.querySelectorAll('.sched-tab'));
+  if (!tabs.length) return;
+
+  function selectTab(tabToSelect) {
+    tabs.forEach(tab => {
+      const isSelected = tab === tabToSelect;
+      tab.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      tab.setAttribute('tabindex', isSelected ? '0' : '-1');
+
+      const panelId = tab.getAttribute('aria-controls');
+      const panel = panelId ? document.getElementById(panelId) : null;
+      if (panel) {
+        if (isSelected) {
+          panel.removeAttribute('hidden');
+        } else {
+          panel.setAttribute('hidden', '');
+        }
+      }
+    });
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      selectTab(tab);
+    });
+
+    tab.addEventListener('keydown', (event) => {
+      let targetIndex = null;
+      if (event.key === 'ArrowRight') {
+        targetIndex = (index + 1) % tabs.length;
+      } else if (event.key === 'ArrowLeft') {
+        targetIndex = (index - 1 + tabs.length) % tabs.length;
+      } else if (event.key === 'Home') {
+        targetIndex = 0;
+      } else if (event.key === 'End') {
+        targetIndex = tabs.length - 1;
+      }
+
+      if (targetIndex !== null) {
+        event.preventDefault();
+        const nextTab = tabs[targetIndex];
+        selectTab(nextTab);
+        nextTab.focus();
+      }
+    });
+  });
 }
