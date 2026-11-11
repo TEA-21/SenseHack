@@ -465,24 +465,24 @@ body{font-synthesis:none}
 .sched-tabs-wrap{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:clamp(20px,3vh,32px)}
 .sched-tabs-wrap::-webkit-scrollbar{display:none}
 .sched-tabs{display:inline-flex;border:1px solid var(--line);background:rgba(243,234,223,.03);border-radius:8px;padding:4px;gap:4px}
-.sched-tab{display:inline-flex;align-items:center;justify-content:center;background:none;min-height:44px;padding:10px 18px;font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border-radius:5px;border:1px solid transparent;cursor:pointer;transition:all .2s ease;white-space:nowrap}
+.sched-tab{display:inline-flex;align-items:center;justify-content:center;background:none;min-height:44px;padding:10px 16px;font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border-radius:4px;border:1px solid transparent;cursor:pointer;transition:color .2s ease,background-color .2s ease,border-color .2s ease;white-space:nowrap}
 .sched-tab:hover{color:var(--paper)}
-.sched-tab[aria-selected="true"]{background:var(--orange);color:var(--ink);font-weight:700;box-shadow:0 0 16px rgba(255,90,31,.3)}
+.sched-tab[aria-selected="true"]{background:var(--orange);color:var(--ink);font-weight:700}
 .sched-tab:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 
-.sched-banner{border:1px solid var(--amber);background:radial-gradient(ellipse at top left,rgba(255,162,74,.14),rgba(10,8,7,.75));border-radius:8px;padding:22px 24px;margin-bottom:28px;display:flex;gap:16px;align-items:flex-start}
+.sched-banner{border:1px solid rgba(255,162,74,.25);border-left:3px solid var(--amber);background:rgba(255,162,74,.05);border-radius:8px;padding:20px 24px;margin-bottom:28px;display:flex;gap:16px;align-items:flex-start}
 .sched-banner-icon{flex-shrink:0;color:var(--amber);display:flex;align-items:center;margin-top:2px}
 .sched-banner-icon svg{width:24px;height:24px}
 .sched-banner-title{font:700 14px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:0 0 6px}
 .sched-banner-text{font:14px/1.65 var(--f-body);color:#ded6cc;margin:0}
 
 .sched-list{display:flex;flex-direction:column;gap:12px;position:relative}
-.sched-item{display:grid;grid-template-columns:190px 1fr;gap:24px;padding:18px 22px;border:1px solid var(--line);border-radius:8px;background:rgba(243,234,223,.035);transition:border-color .2s ease,background-color .2s ease}
+.sched-item{display:grid;grid-template-columns:190px 1fr;gap:24px;padding:16px 20px;border:1px solid var(--line);border-radius:8px;background:rgba(243,234,223,.035);transition:border-color .2s ease,background-color .2s ease}
 .sched-item:hover{border-color:rgba(243,234,223,.35);background:rgba(243,234,223,.055)}
 .sched-item.is-milestone{border-left:3px solid var(--orange)}
-.sched-time{font:600 13px var(--f-mono);letter-spacing:.04em;color:var(--amber);white-space:nowrap;padding-top:2px}
-.sched-body h3{font:600 16px var(--f-mono);color:var(--paper);margin:0 0 6px;display:flex;align-items:center;flex-wrap:wrap;gap:10px}
-.sched-tag-elim{display:inline-block;color:var(--orange);border-color:rgba(255,90,31,.5);background:rgba(255,90,31,.12);font:600 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid currentColor}
+.sched-time{font:600 13px var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:.04em;color:var(--amber);white-space:nowrap;padding-top:2px}
+.sched-body h3{font:600 16px var(--f-mono);color:var(--paper);margin:0 0 8px;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.sched-tag-elim{display:inline-block;color:var(--orange);background:rgba(255,90,31,.12);font:600 10px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px;border:1px solid rgba(255,90,31,.35)}
 .sched-desc{font:14px/1.65 var(--f-body);color:#d5cbbf;margin:0}
 
 /* FAQ */
@@ -592,7 +592,7 @@ body{font-family:var(--f-body)}
 }
 @media (max-width: 768px) {
   .form-field input, .form-field textarea { font-size: 16px !important; }
-  .sched-item { grid-template-columns: 1fr; gap: 8px; }
+  .sched-item { grid-template-columns: 1fr; gap: 8px; padding: 14px 16px; }
   .sched-time { margin-bottom: 2px; }
 }
 @media (max-width: 820px) {
