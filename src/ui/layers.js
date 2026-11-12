@@ -16,6 +16,13 @@ function setLayer(el, alpha, transform) {
   if (transform !== undefined) el.style.transform = transform;
 }
 
+const DESK_STACK = [
+  { x: -4.5, y: -3.0, r: -3.8 },
+  { x:  4.0, y: -2.0, r:  3.2 },
+  { x: -3.5, y:  3.0, r: -2.4 },
+  { x:  5.0, y:  2.5, r:  4.0 }
+];
+
 export function createLayers(railButtons, shell) {
   const air = $('lAir'), num = $('lNum'), gal = $('lGal'), disksLayer = $('tracks'), sig = $('lSig'), beam = $('lBeam');
   const counts = [...document.querySelectorAll('[data-count]')].map(el => ({ el, n: +el.dataset.count, plus: el.hasAttribute('data-plus') }));
@@ -35,14 +42,16 @@ export function createLayers(railButtons, shell) {
   const diskHint = $('diskHint');
 
   // Gallery photos are real controls: click one to bring it to the front.
+  let currentRaw = 0;
+  const n = cards.length;
   cards.forEach((el, i) => {
     el.dataset.cursor = 'View';
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '-1');
     el.addEventListener('click', () => {
-      const n = cards.length;
-      const next = i === galIdx ? (i + 1) % n : i;
-      shell.scrollToY(shell.progressToY(galleryRaw(FIRST + (next / (n - 1)) * (LAST - FIRST))));
+      const topIdx = Math.min(n - 1, Math.max(0, Math.floor(currentRaw + 0.35)));
+      const targetIdx = i < topIdx ? i : (i === topIdx ? (i + 1) % n : i);
+      shell.scrollToY(shell.progressToY(galleryRaw(FIRST + (targetIdx / (n - 1)) * (LAST - FIRST))));
     });
   });
 
@@ -99,24 +108,63 @@ export function createLayers(railButtons, shell) {
     if (galA > .01) {
       const n = cards.length;
       const raw = Math.min(1, Math.max(0, (g - FIRST) / (LAST - FIRST))) * (n - 1);
+      currentRaw = raw;
       const base = Math.floor(raw);
       const f = REDUCE ? Math.round(raw) : base + sstep(.3, .7, raw - base);
+      const isMobile = window.innerWidth <= 820;
+      const mobileScale = isMobile ? 0.70 : 1.0;
+
       cards.forEach((el, i) => {
-        const d = i - f;
-        let o, sc, x, y, r, dim;
-        if (d < 0) {
-          const t = Math.min(1, -d);
-          sc = 1 + t * .5; x = t * 16; y = -t * 9; r = t * (i % 2 ? 5 : -5); o = Math.max(0, 1 - t * 1.25); dim = 0;
+        const desk = DESK_STACK[i];
+        const pDrop = i === 0 ? 1.0 : Math.min(1.0, Math.max(0.0, raw - (i - 1)));
+
+        let yPlunge, sc, r, opacity, shadowLift;
+
+        if (REDUCE) {
+          yPlunge = 0;
+          sc = 1.0;
+          r = 0;
+          opacity = sstep(0.0, 0.4, pDrop);
+          shadowLift = 0;
         } else {
-          const t = Math.min(d, 4);
-          sc = 1 - t * .07; x = -t * 7; y = -t * 4.5; r = 0; o = Math.max(0, 1 - t * .3); dim = Math.min(.8, t * .22);
+          if (pDrop <= 0.01) {
+            yPlunge = -125.0;
+            sc = 1.12;
+            r = (desk.r + 6.0) * mobileScale;
+            opacity = 0;
+            shadowLift = 1.0;
+          } else if (pDrop < 0.85) {
+            const tNorm = pDrop / 0.85;
+            const plunge = tNorm * tNorm;
+            yPlunge = (1.0 - plunge) * -125.0;
+            sc = 1.12 - plunge * 0.12;
+            r = (desk.r + (1.0 - plunge) * 6.0) * mobileScale;
+            opacity = sstep(0.01, 0.25, pDrop);
+            shadowLift = 1.0 - plunge * 0.7;
+          } else {
+            const bounceT = (pDrop - 0.85) / 0.15;
+            const squash = Math.sin(bounceT * Math.PI) * 1.5;
+            yPlunge = squash;
+            sc = 1.0 - Math.sin(bounceT * Math.PI) * 0.015;
+            r = desk.r * mobileScale;
+            opacity = 1.0;
+            shadowLift = (1.0 - bounceT) * 0.3;
+          }
         }
-        const tilt = ((i * 37) % 7 - 3) * .35;
-        el.style.opacity = o.toFixed(3);
-        el.style.pointerEvents = o > .35 && d >= -.05 ? 'auto' : 'none';
-        el.style.transform = `translate(${x.toFixed(2)}%, ${y.toFixed(2)}%) rotate(${(r + tilt).toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-        el.style.zIndex = String(60 - Math.round(d * 10));
+
+        const zIndex = 10 + i * 10;
+        const cover = i === n - 1 ? 0 : Math.min(1.0, Math.max(0.0, raw - i));
+        const dim = cover * 0.28;
+
+        const restX = desk.x * mobileScale;
+        const totalY = desk.y * mobileScale + yPlunge;
+
+        el.style.opacity = opacity.toFixed(3);
+        el.style.pointerEvents = opacity > 0.8 ? 'auto' : 'none';
+        el.style.transform = `translate(${restX.toFixed(2)}%, ${totalY.toFixed(2)}%) rotate(${r.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        el.style.zIndex = String(zIndex);
         el.style.setProperty('--dim', dim.toFixed(3));
+        el.style.setProperty('--lift', shadowLift.toFixed(3));
       });
       const idx = Math.min(n - 1, Math.round(f));
       if (idx !== galIdx) {
