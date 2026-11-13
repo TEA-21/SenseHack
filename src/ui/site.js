@@ -7,6 +7,17 @@ export function initSite() {
 
   const $ = (id) => document.getElementById(id);
 
+  const announcement = $('announcementDialog');
+  const announcementClose = $('announcementClose');
+  if (announcement) {
+    if (typeof announcement.showModal === 'function') announcement.showModal();
+    else announcement.setAttribute('open', '');
+    announcementClose?.addEventListener('click', () => {
+      if (typeof announcement.close === 'function') announcement.close();
+      else announcement.removeAttribute('open');
+    });
+  }
+
   // 1. Registration Links Configuration
   document.querySelectorAll('.form-link').forEach(link => {
     const key = link.dataset.form;

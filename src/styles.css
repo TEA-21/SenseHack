@@ -603,3 +603,17 @@ body{font-family:var(--f-body)}
 @media (max-width: 820px) {
   .btn, .menu-btn, .menu a, .foot-icons a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 }
+/* Team submission announcement */
+.announcement{width:min(520px,calc(100% - 32px));max-width:none;border:1px solid rgba(255,90,31,.55);border-radius:18px;padding:clamp(24px,5vw,40px);background:radial-gradient(ellipse at 100% 0,rgba(255,90,31,.14),transparent 48%),#100d0b;color:var(--paper);box-shadow:0 24px 90px rgba(0,0,0,.72)}
+.announcement::backdrop{background:rgba(5,4,3,.78);backdrop-filter:blur(7px)}
+.announcement-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.announcement-tag{color:var(--amber);font:600 11px/1.4 var(--f-label);letter-spacing:.16em}
+.announcement-mark{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--orange);border-radius:50%;color:var(--orange);font:700 18px var(--f-label)}
+.announcement h2{margin:0 0 14px;font:700 clamp(23px,5vw,32px)/1.18 var(--f-display);letter-spacing:-.04em}
+.announcement p{margin:0;color:var(--paper);font:400 16px/1.7 var(--f-body)}
+.announcement p strong{color:var(--amber);font-weight:600}
+.announcement-close{width:100%;margin-top:26px;justify-content:center}
+.announcement-close:focus-visible{outline:2px solid var(--paper);outline-offset:4px}
+html.has-cursor:has(#announcementDialog[open]),html.has-cursor:has(#announcementDialog[open]) a{cursor:auto}
+html.has-cursor:has(#announcementDialog[open]) button{cursor:pointer}
+
