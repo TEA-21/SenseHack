@@ -7,16 +7,47 @@ export function initSite() {
 
   const $ = (id) => document.getElementById(id);
 
+  function hasSeenAnnouncement() {
+    try { return sessionStorage.getItem('sh_announcement_seen') === '1'; } catch { return false; }
+  }
+  function markAnnouncementSeen() {
+    try { sessionStorage.setItem('sh_announcement_seen', '1'); } catch {}
+  }
+
   const announcement = $('announcementDialog');
   const announcementClose = $('announcementClose');
-  if (announcement) {
-    if (typeof announcement.showModal === 'function') announcement.showModal();
-    else announcement.setAttribute('open', '');
-    announcementClose?.addEventListener('click', () => {
-      if (typeof announcement.close === 'function') announcement.close();
-      else announcement.removeAttribute('open');
-    });
+  const announcementDownload = $('announcementDownload');
+
+  function closeAnnouncement() {
+    markAnnouncementSeen();
+    if (typeof announcement?.close === 'function') announcement.close();
+    else announcement?.removeAttribute('open');
   }
+
+  window.addEventListener('boot:done', () => {
+    if (announcement && !hasSeenAnnouncement() && !announcement.open) {
+      if (typeof announcement.showModal === 'function') announcement.showModal();
+      else announcement.setAttribute('open', '');
+    }
+  });
+
+  announcementClose?.addEventListener('click', closeAnnouncement);
+  announcementDownload?.addEventListener('click', closeAnnouncement);
+  announcement?.addEventListener('close', markAnnouncementSeen);
+
+  announcement?.addEventListener('click', (e) => {
+    if (e.target !== announcement) return;
+    const rect = announcement.getBoundingClientRect();
+    const isOutside = (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    );
+    if (isOutside) {
+      closeAnnouncement();
+    }
+  });
 
   // 1. Registration Links Configuration
   document.querySelectorAll('.form-link').forEach(link => {
